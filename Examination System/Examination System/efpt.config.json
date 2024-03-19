@@ -1,0 +1,322 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "ITI_EXAMContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": "Procedures",
+   "OutputContextPath": "Data",
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Examination_System",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Branch]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Branch_Track]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Choice]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_Topic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[error_log]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Exam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Exam_Question]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Inst_assign_Branch]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Instructor]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Instructor_Course_Question]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Instructor_Teach_Course_For_Track_In_Branch]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Question]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Student]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Student_Exam_Grade]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Student_Take_Exam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Topic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Track]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Track_Course]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Track_Course_Exam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Add_Branch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Course]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Grade_To_Student]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Question]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Student]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Topic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Add_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Assgin_Question_For_Course_By_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Assign_Course_To_Instructor_Track_Branch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Assign_Course_To_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Branch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Course_By_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Course_From_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Course_From_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Question_From_Course_By_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Question]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Student]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Topic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Exam_Answers]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Exam_Correction]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Exam_Generation]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Log_Error]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Branches]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Courses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Instructor_Courses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Instructors]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Questions_For_Course_By_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Questions_For_Course]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Questions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Students]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Topics]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Track_Courses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Tracks]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Exam_Questions]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Instructor_Courses_By_Instructor_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Questions_With_Students_Answers]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Student_Grades_By_Student_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Students_Data_By_Track_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Topics_Of_Course]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Show_Error]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Throw_Error_No_Rows_Affected]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Branch]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Course_By_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Instructor]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Student]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Topic]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Update_Track]",
+         "ObjectType": 1
+      }
+   ],
+   "UiHint": "desktop-7cqe2it.ITI_EXAM.dbo",
+   "UncountableWords": null,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
