@@ -1,6 +1,6 @@
-Examination System/.vs/*
-Examination System/Examination System/bin/*
-Examination System/Examination System/obj/*
+.vs/*
+Examination System/bin/*
+Examination System/obj/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/aspnetcore
 # Edit at https://www.toptal.com/developers/gitignore?templates=aspnetcore
