@@ -20,6 +20,4 @@ public partial class Exam
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
 
     public virtual ICollection<TrackCourseExam> TrackCourseExams { get; set; } = new List<TrackCourseExam>();
-
-    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 }

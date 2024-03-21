@@ -21,13 +21,13 @@ public partial class Question
 
     public int CrsId { get; set; }
 
-    public virtual ICollection<Choice> Choices { get; set; } = new List<Choice>();
+    public virtual Choice Choice { get; set; }
 
     public virtual Course Crs { get; set; }
+
+    public virtual ICollection<ExamQuestion> ExamQuestions { get; set; } = new List<ExamQuestion>();
 
     public virtual Instructor Ins { get; set; }
 
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
-
-    public virtual ICollection<Exam> Exams { get; set; } = new List<Exam>();
 }

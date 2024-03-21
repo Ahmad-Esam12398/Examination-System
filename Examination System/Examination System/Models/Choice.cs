@@ -7,7 +7,7 @@ namespace Examination_System.Models;
 
 public partial class Choice
 {
-    public int ChId { get; set; }
+    public int QuesId { get; set; }
 
     public string A { get; set; }
 
@@ -16,8 +16,6 @@ public partial class Choice
     public string C { get; set; }
 
     public string D { get; set; }
-
-    public int QuesId { get; set; }
 
     public virtual Question Ques { get; set; }
 }

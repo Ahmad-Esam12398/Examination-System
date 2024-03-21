@@ -159,7 +159,7 @@ as
 begin
 	begin try
 		insert into 
-		Topic(top_name, crs_id)
+		Topic(top_name)
 		values
 		(@topicName, @courseId)
 		exec Throw_Error_No_Rows_Affected;
@@ -176,8 +176,10 @@ create proc Update_Topic @topicId int, @topicName varchar(20), @courseId int
 as
 begin
 	begin try
-		update Topic set top_name = @topicName, crs_id = @courseId
-		where top_id = @topicId
+		update Topic set top_name = @topicName
+		where top_id = @topicId;
+		update Course_Topic set courseId = @courseId
+		where topicId = @topicId;
 		exec Throw_Error_No_Rows_Affected;
 	end try
 	begin catch
@@ -259,7 +261,7 @@ end
 
 go
 
-create proc Add_Question @Qtitle varchar(200), @QAnswer char, @Qtype char, @Qweight int, @Qchoice1 varchar(100), @Qchoice2 varchar(100), @Qchoice3 varchar(100), @Qchoice4 varchar(100)
+create proc Add_Question @Qtitle varchar(200), @QAnswer char, @Qtype char, @Qweight int, @Qchoice1 varchar(100), @Qchoice2 varchar(100), @Qchoice3 varchar(100), @Qchoice4 varchar(100), @instructorId int, @crs_id int
 as
 begin
 	begin try
@@ -273,9 +275,9 @@ begin
 		begin
 			begin tran
 			insert into 
-			Question(ques_tittle, ques_type, ques_weight, ques_answer)
+			Question(ques_tittle, ques_type, ques_weight, ques_answer, ins_id, crs_id)
 			values
-			(@Qtitle, @Qtype, @Qweight, @QAnswer);
+			(@Qtitle, @Qtype, @Qweight, @QAnswer, @instructorId, @crs_id);
 
 			insert into
 			Choice(ques_id, A, B, C, D)
@@ -313,7 +315,7 @@ end
 
 go
 
-create proc Update_Question @QId int, @Qtitle varchar(200), @QAnswer char, @Qtype char, @Qweight int, @Qchoice1 varchar(100), @Qchoice2 varchar(100), @Qchoice3 varchar(100), @Qchoice4 varchar(100)
+create proc Update_Question @QId int, @Qtitle varchar(200), @QAnswer char, @Qtype char, @Qweight int, @Qchoice1 varchar(100), @Qchoice2 varchar(100), @Qchoice3 varchar(100), @Qchoice4 varchar(100), @instructorId int, @crs_id int
 as
 begin
 	begin try
@@ -329,7 +331,8 @@ begin
 			update  
 			Question
 			set
-			ques_tittle = @Qtitle, ques_type = @Qtype, ques_weight = @Qweight, ques_answer = @QAnswer
+			ques_tittle = @Qtitle, ques_type = @Qtype, ques_weight = @Qweight, ques_answer = @QAnswer,
+			ins_id = @instructorId, crs_id = @crs_id
 			where ques_id = @QId;
 			update
 			Choice(ques_id, A, B, C, D)
@@ -360,41 +363,41 @@ end
 
 go
 
-create proc Assgin_Question_For_Course_By_Instructor @QId int, @CourseId int, @InstructorId varchar(14)
-as
-begin
-	begin try
-	insert into 
-		Instructor_Course_Question(ques_id, crs_id, ins_id)
-	values
-		(@QId, @CourseId, @InstructorId);
-	exec Throw_Error_No_Rows_Affected;
-	end try
-	begin catch
-		exec Show_Error;
-		exec Log_Error;
-	end catch
-end
+--create proc Assgin_Question_For_Course_By_Instructor @QId int, @CourseId int, @InstructorId varchar(14)
+--as
+--begin
+--	begin try
+--	insert into 
+--		Instructor_Course_Question(ques_id, crs_id, ins_id)
+--	values
+--		(@QId, @CourseId, @InstructorId);
+--	exec Throw_Error_No_Rows_Affected;
+--	end try
+--	begin catch
+--		exec Show_Error;
+--		exec Log_Error;
+--	end catch
+--end
 
 go
 
-create proc Delete_Question_From_Course_By_Instructor @QId int, @CourseId int, @InstructorId varchar(14)
-as
-begin
-begin try
-	delete from
-		Instructor_Course_Question
-	where 
-		ques_id = @QId and crs_id = @CourseId and ins_id = @InstructorId;
-	exec Throw_Error_No_Rows_Affected;
-end try
-begin catch
-	exec Show_Error;
-	exec Log_Error;
-end catch
-end
+--create proc Delete_Question_From_Course_By_Instructor @QId int
+--as
+--begin
+--begin try
+--	delete from
+--		Instructor_Course_Question
+--	where 
+--		ques_id = @QId and crs_id = @CourseId and ins_id = @InstructorId;
+--	exec Throw_Error_No_Rows_Affected;
+--end try
+--begin catch
+--	exec Show_Error;
+--	exec Log_Error;
+--end catch
+--end
 
-go
+--go
 
 create proc Read_All_Questions_For_Course_By_Instructor @InstructorId varchar(14), @courseId int
 as
@@ -402,17 +405,15 @@ begin
 	select i.Ins_id, c.crs_id, c.crs_name, q.ques_tittle, q.ques_answer,
 	q.ques_tittle, ch.A, ch.B, ch.C, ch.D
 
-	from Instructor_Course_Question icq
+	from Question q
 	join Course c
-	on c.crs_id = icq.crs_id
+	on c.crs_id = q.crs_id
 	join Instructor i
-	on i.Ins_id = icq.ins_id
-	join Question q
-	on q.ques_id = icq.ques_id
+	on i.Ins_id = q.ins_id
 	join Choice ch
 	on ch.ques_id = q.ques_id
 	where
-	icq.ins_id = @InstructorId and icq.crs_id = @courseId;
+	q.ins_id = @InstructorId and q.crs_id = @courseId;
 end
 
 go
@@ -421,14 +422,12 @@ create proc Read_All_Questions_For_Course @courseId int
 as
 begin
 	select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
-	from Instructor_Course_Question icq
+	from Question q
 	join Course c
-	on c.crs_id = icq.crs_id
-	join Question q
-	on q.ques_id = icq.ques_id
+	on c.crs_id = q.crs_id
 	join Choice ch
 	on ch.ques_id = q.ques_id
-	where icq.crs_id = @courseId
+	where q.crs_id = @courseId
 end
 
 go
@@ -457,8 +456,8 @@ create proc Read_Student_Grades_By_Student_Id @studentId int
 as
 begin
 	begin try
-		select s.std_name, c.crs_name, se.Exam_id, se.Grade
-		from Student_Take_Exam se
+		select s.std_name, c.crs_name, se.Exam_id
+		from Student_Exam_Grade se
 		join Student s
 		on s.std_id = se.std_id
 		join Track_Course_Exam tce

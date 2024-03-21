@@ -18,7 +18,7 @@ public class QuestionRepo : IQuestionRepo
 
         try
         {
-            return _context.Questions.Include(q => q.Choices);
+            return _context.Questions.Include(q => q.Choice);
 
         }catch
         {
@@ -42,7 +42,7 @@ public class QuestionRepo : IQuestionRepo
         try
         {
             return _context.Questions
-                            .Include(q => q.Choices)
+                            .Include(q => q.Choice)
                             .FirstOrDefault(q => q.QuesId == id);
         }
         catch

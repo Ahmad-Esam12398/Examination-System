@@ -1,4 +1,4 @@
-alter proc Exam_Generation @Ex_id int, @ins_id varchar(14), @crs_id int,@tf int
+create proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
 as
 begin
 	create table #t(ques_id int)
@@ -36,7 +36,7 @@ begin
 	begin try
 	select * from #t
 		insert into Exam_Question
-		select @Ex_id,ques_id
+		select ques_id
 		from #t
 		if(@@ROWCOUNT = 0)
 			throw 50000, 'Exam already exist', 2;
@@ -51,8 +51,9 @@ begin
 	
 end
 
-exec Exam_Generation 1,29040512000017,2,2
+exec Exam_Generation 29040512000017,2,2
 
+go
 
 ---------------------------------------------------------------------------------------
 create proc Exam_Answers @Ex_id int
@@ -64,8 +65,11 @@ begin
 end
 
 exec Exam_Answers 1
+
+go
+
 ----------------------------------------------------------------------------------------
-alter proc Exam_Correction @Ex_id int,@std_id varchar(14)
+create proc Exam_Correction @Ex_id int,@std_id varchar(14)
 as
 begin
 	declare c1 cursor
@@ -94,6 +98,9 @@ begin
 	exec Add_Grade_To_Student @std_id,@Ex_id,@grade
 	select @grade
 end
+
+go
+
 -----------------------------------------------------------------------------------------
 --branch SP
 create proc Read_All_Branches
@@ -102,6 +109,8 @@ begin
 	select * from Branch
 end
 --
+go
+
 create proc Add_Branch @Branch_Name varchar(25), @MgrId varchar(14)
 as
 begin
@@ -119,6 +128,8 @@ begin
 	end catch
 end
 --
+go
+
 create proc Update_Branch @Branch_Id int,@Branch_Name varchar(25), @MgrId varchar(14)
 as
 begin
@@ -138,6 +149,8 @@ begin
 	end catch
 end
 --
+go
+
 create proc Delete_Branch @Branch_Id int
 as
 begin
@@ -156,12 +169,16 @@ begin
 end
 -------------------------------------------------------------------------------------------
 ----student SP
+go
+
 create proc Read_All_Students
 as
 begin
 	select * from Student
 end
 --
+go
+
 create proc Add_Student @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
@@ -179,6 +196,8 @@ begin
 	end catch
 end
 --
+go
+
 create proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
@@ -198,6 +217,8 @@ begin
 	end catch
 end
 --
+go
+
 create proc Delete_Student @std_id varchar(14)
 as
 begin
@@ -215,6 +236,8 @@ begin
 	end catch
 end
 --------------------------------------------------------------------------------------
+go
+
 create proc Add_Grade_To_Student @std_id varchar(14), @Exam_id int,@Grade float
 as
 begin
