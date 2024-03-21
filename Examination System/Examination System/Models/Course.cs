@@ -13,9 +13,9 @@ public partial class Course
 
     public int? CrsDuration { get; set; }
 
-    public virtual ICollection<InstructorCourseQuestion> InstructorCourseQuestions { get; set; } = new List<InstructorCourseQuestion>();
-
     public virtual ICollection<InstructorTeachCourseForTrackInBranch> InstructorTeachCourseForTrackInBranches { get; set; } = new List<InstructorTeachCourseForTrackInBranch>();
+
+    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
     public virtual ICollection<Topic> TopicsNavigation { get; set; } = new List<Topic>();
 

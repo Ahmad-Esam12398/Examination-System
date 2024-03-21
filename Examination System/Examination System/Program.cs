@@ -1,4 +1,5 @@
 using Examination_System.Data;
+using Examination_System.Repos;
 using Examination_System.Repos.Admin;
 using Examination_System.Repos.Instructor;
 using Examination_System.Repos.Student;
@@ -20,6 +21,7 @@ namespace Examination_System
             builder.Services.AddScoped<IAdminRepo, AdminRepo>();
             builder.Services.AddScoped<IInstructorRepo, InstructorRepo>();
             builder.Services.AddScoped<IStudentRepo, StudentRepo>();
+            builder.Services.AddScoped<IQuestionRepo, QuestionRepo>();
 
             var app = builder.Build();
 

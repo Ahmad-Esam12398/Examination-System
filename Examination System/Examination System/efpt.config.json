@@ -4,7 +4,7 @@
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": false,
+   "IncludeConnectionString": true,
    "ModelNamespace": null,
    "OutputContextPath": "Data",
    "OutputPath": "Models",
@@ -56,10 +56,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Instructor_Course_Question]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Instructor_Teach_Course_For_Track_In_Branch]",
          "ObjectType": 0
       },
@@ -96,7 +92,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "desktop-7cqe2it.ITI_EXAM.dbo",
+   "UiHint": "desktop-f7apv3k.ITI_EXAM.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

@@ -17,9 +17,15 @@ public partial class Question
 
     public int QuesWeight { get; set; }
 
+    public string InsId { get; set; }
+
+    public int CrsId { get; set; }
+
     public virtual ICollection<Choice> Choices { get; set; } = new List<Choice>();
 
-    public virtual ICollection<InstructorCourseQuestion> InstructorCourseQuestions { get; set; } = new List<InstructorCourseQuestion>();
+    public virtual Course Crs { get; set; }
+
+    public virtual Instructor Ins { get; set; }
 
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
 
