@@ -17,9 +17,9 @@ public partial class Instructor
 
     public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
-    public virtual ICollection<InstructorCourseQuestion> InstructorCourseQuestions { get; set; } = new List<InstructorCourseQuestion>();
-
     public virtual ICollection<InstructorTeachCourseForTrackInBranch> InstructorTeachCourseForTrackInBranches { get; set; } = new List<InstructorTeachCourseForTrackInBranch>();
+
+    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
     public virtual ICollection<Track> Tracks { get; set; } = new List<Track>();
 

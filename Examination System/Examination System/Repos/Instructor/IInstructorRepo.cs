@@ -1,6 +1,6 @@
-﻿namespace Examination_System.Repos.Instructor
+﻿namespace Examination_System.Repos.Instructor;
+
+public interface IInstructorRepo
 {
-    public interface IInstructorRepo
-    {
-    }
+    
 }
