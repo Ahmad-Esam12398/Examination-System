@@ -1,5 +1,6 @@
 ﻿using Examination_System.Models;
 using Examination_System.Repos.Instructor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers
@@ -11,6 +12,7 @@ namespace Examination_System.Controllers
         {
             instructorRepo = _instructorRepo;
         }
+        [Authorize(Roles = "Instructor")]
         public IActionResult Index()
         {
             List<Question> questionList = new List<Question>

@@ -1,4 +1,5 @@
 ﻿using Examination_System.Repos.Student;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers
@@ -10,6 +11,7 @@ namespace Examination_System.Controllers
         {
             studentRepo = _studentRepo;
         }
+        [Authorize(Roles="Student")]
         public IActionResult Index()
         {
             return View();
