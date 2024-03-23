@@ -12,13 +12,14 @@ namespace Examination_System.Controllers
         {
             instructorRepo = _instructorRepo;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<ExamQuestionsViewModel> questionList = new List<ExamQuestionsViewModel>();
-                questionList = instructorRepo.Read_Exam_Questions(2);
-            List<CourseViewModel> courses = new List<CourseViewModel>();
-            courses = instructorRepo.InstructorCourses("29040512000017");
-            ViewBag.InstructorCourses = courses;
+            //List<ExamQuestionsViewModel> questionList = new List<ExamQuestionsViewModel>();
+            var questionList = await instructorRepo.Read_Exam_Questions(2);
+            var instructorData = await instructorRepo.GetInstructorData("29040512000017");
+
+            ViewBag.InstructorData = instructorData;
+
             return View(questionList);
         }
     }

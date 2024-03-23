@@ -5,6 +5,9 @@ namespace Examination_System.Repos.Instructor;
 
 public interface IInstructorRepo
 {
-    List<ExamQuestionsViewModel> Read_Exam_Questions(int id);
-    List<CourseViewModel> InstructorCourses(string instructorId);
+    Task<List<Read_Exam_QuestionsResult>> Read_Exam_Questions(int id);
+    Task<List<Read_All_Instructor_CoursesResult>> InstructorCourses(string instructorId);
+    Task<List<Read_All_BranchesResult>> GetBranches();
+    Task<List<Read_All_TracksResult>> GetTracks();
+    Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> GetInstructorData(string instructorId);
 }
