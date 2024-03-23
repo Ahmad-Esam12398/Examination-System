@@ -28,5 +28,10 @@ namespace Examination_System.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        //Access Denied Page when user is not authorized to access specified page
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

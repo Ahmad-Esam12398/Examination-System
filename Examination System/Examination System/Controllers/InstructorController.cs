@@ -1,5 +1,6 @@
 ﻿using Examination_System.Models;
 using Examination_System.Repos.Instructor;
+using Microsoft.AspNetCore.Authorization;
 using Examination_System.ViewModel.Instructor;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace Examination_System.Controllers
         {
             instructorRepo = _instructorRepo;
         }
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Index()
         {
             //List<ExamQuestionsViewModel> questionList = new List<ExamQuestionsViewModel>();
