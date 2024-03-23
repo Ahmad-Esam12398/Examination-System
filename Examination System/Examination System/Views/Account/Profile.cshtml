@@ -1,0 +1,28 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1 class="mb-4">Profile</h1>
+
+<form method="post">
+    <div class="mb-3">
+        <label for="Id" class="form-label">ID:</label>
+        <input type="text" id="Id" asp-for="Id" class="form-control" readonly />
+    </div>
+    <div class="mb-3">
+        <label for="Name" class="form-label">Name:</label>
+        <input type="text" id="Name" asp-for="Name" class="form-control" readonly />
+    </div>
+    <div class="mb-3">
+		<label for="Role" class="form-label">Role:</label>
+		<input type="text" id="Role" asp-for="Role" class="form-control" readonly/>
+    <div class="mb-3">
+        <label for="Password" class="form-label">New Password:</label>
+        <input type="password" id="Password" asp-for="Password" class="form-control" />
+    </div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" class="btn btn-primary me-md-2">Save</button>
+        <a href="/Home/Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

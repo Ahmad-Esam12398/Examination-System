@@ -21,7 +21,7 @@
             margin: 0 auto;
             padding: 40px;
             background-color: #fff;
-            border-radius:10px;
+            border-radius: 10px;
             box-shadow: 0 0 15px #007bff;
         }
 
@@ -73,7 +73,7 @@
             <div class="col-md-6">
                 <div class="login-container">
                     <h2 class="text-center mb-4">@ViewData["Title"]</h2>
-                    <form class="login-form" asp-controller="Login" asp-action="Login" method="post" novalidate>
+                    <form class="login-form" asp-controller="Account" asp-action="Login" method="post" novalidate>
                         <div class="form-group">
                             <label asp-for="Id"></label>
                             <input asp-for="Id" class="form-control" />
