@@ -1,0 +1,22 @@
+﻿@model Examination_System.Models.Student
+
+@{
+    ViewData["Title"] = "Info";
+    Layout = "~/Views/Shared/mainLayout.cshtml";
+}
+
+<div>
+    <h1>@Model.StdName</h1>
+    <div>
+        <p>Branch Location: @Model.Branch.BranchName <i class="fas fa-map-marker-alt"></i></p>
+    </div>
+    <div>
+        <p>Track: @ViewBag.Track.TrackName</p>
+    </div>
+    <div>
+        <!-- Buttons for courses, incoming exams, and previous exams -->
+        <a class="btn btn-primary" asp-action="Courses" asp-route-id="@Model.StdId">Courses</a>
+        <a class="btn btn-success" asp-action="IncomingExams" asp-route-id="@Model.StdId">Incoming Exams</a>
+        <a class="btn btn-info" asp-action="PreviousExams" asp-route-id="@Model.StdId">Previous Exams</a>
+    </div>
+</div>

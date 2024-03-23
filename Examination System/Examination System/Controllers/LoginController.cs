@@ -40,11 +40,11 @@ namespace Examination_System.Controllers
 
             if (user.Role == "Student")
             {
-				return RedirectToAction("Index", "Student");
+                return RedirectToAction("Info", "Student", new {id = user.Id} );
 			}
 			else
             {
-				return RedirectToAction("Index", "Instructor");
+				return RedirectToAction("Index", "Instructor", new {id = user.Id});
 			}
 
         }
