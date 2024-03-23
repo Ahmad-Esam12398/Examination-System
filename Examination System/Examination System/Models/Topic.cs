@@ -11,9 +11,5 @@ public partial class Topic
 
     public string TopName { get; set; }
 
-    public int CrsId { get; set; }
-
-    public virtual Course Crs { get; set; }
-
     public virtual ICollection<Course> Courses { get; set; } = new List<Course>();
 }

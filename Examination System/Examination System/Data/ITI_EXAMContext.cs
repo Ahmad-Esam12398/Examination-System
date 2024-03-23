@@ -28,6 +28,8 @@ public partial class ITI_EXAMContext : DbContext
 
     public virtual DbSet<Exam> Exams { get; set; }
 
+    public virtual DbSet<ExamQuestion> ExamQuestions { get; set; }
+
     public virtual DbSet<Instructor> Instructors { get; set; }
 
     public virtual DbSet<InstructorTeachCourseForTrackInBranch> InstructorTeachCourseForTrackInBranches { get; set; }
@@ -48,7 +50,7 @@ public partial class ITI_EXAMContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ITI_EXAM;Integrated Security=True");
+        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ITI_EXAM;Integrated Security=True;Encrypt=True; trust server certificate = true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,8 +64,7 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.MgrId)
                 .IsRequired()
-                .HasMaxLength(14)
-                .IsUnicode(false);
+                .HasMaxLength(14);
 
             entity.HasOne(d => d.Mgr).WithMany(p => p.Branches)
                 .HasForeignKey(d => d.MgrId)
@@ -92,11 +93,13 @@ public partial class ITI_EXAMContext : DbContext
 
         modelBuilder.Entity<Choice>(entity =>
         {
-            entity.HasKey(e => e.ChId);
+            entity.HasKey(e => e.QuesId);
 
             entity.ToTable("Choice");
 
-            entity.Property(e => e.ChId).HasColumnName("ch_id");
+            entity.Property(e => e.QuesId)
+                .ValueGeneratedNever()
+                .HasColumnName("ques_id");
             entity.Property(e => e.A)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -113,10 +116,9 @@ public partial class ITI_EXAMContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.QuesId).HasColumnName("ques_id");
 
-            entity.HasOne(d => d.Ques).WithMany(p => p.Choices)
-                .HasForeignKey(d => d.QuesId)
+            entity.HasOne(d => d.Ques).WithOne(p => p.Choice)
+                .HasForeignKey<Choice>(d => d.QuesId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Choice_Question");
         });
@@ -184,25 +186,21 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.ExDuration).HasColumnName("Ex_duration");
             entity.Property(e => e.ExGrade).HasColumnName("Ex_grade");
             entity.Property(e => e.ExPassGrade).HasColumnName("Ex_passGrade");
+        });
 
-            entity.HasMany(d => d.Questions).WithMany(p => p.Exams)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ExamQuestion",
-                    r => r.HasOne<Question>().WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Exam_Question_Question"),
-                    l => l.HasOne<Exam>().WithMany()
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_Exam_Question_Exam"),
-                    j =>
-                    {
-                        j.HasKey("ExamId", "QuestionId");
-                        j.ToTable("Exam_Question");
-                        j.IndexerProperty<int>("ExamId").HasColumnName("Exam_id");
-                        j.IndexerProperty<int>("QuestionId").HasColumnName("Question_id");
-                    });
+        modelBuilder.Entity<ExamQuestion>(entity =>
+        {
+            entity.HasKey(e => new { e.ExamId, e.QuestionId });
+
+            entity.ToTable("Exam_Question");
+
+            entity.Property(e => e.ExamId).HasColumnName("Exam_id");
+            entity.Property(e => e.QuestionId).HasColumnName("Question_id");
+
+            entity.HasOne(d => d.Question).WithMany(p => p.ExamQuestions)
+                .HasForeignKey(d => d.QuestionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Exam_Question_Question");
         });
 
         modelBuilder.Entity<Instructor>(entity =>
@@ -213,7 +211,6 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("Ins_id");
             entity.Property(e => e.InsMobile)
                 .HasMaxLength(11)
@@ -247,7 +244,6 @@ public partial class ITI_EXAMContext : DbContext
                         j.ToTable("Inst_assign_Branch");
                         j.IndexerProperty<string>("InstId")
                             .HasMaxLength(14)
-                            .IsUnicode(false)
                             .HasColumnName("inst_id");
                         j.IndexerProperty<int>("BranchId").HasColumnName("branch_id");
                     });
@@ -261,7 +257,6 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
@@ -299,7 +294,6 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.InsId)
                 .IsRequired()
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.QuesAnswer)
                 .IsRequired()
@@ -357,6 +351,16 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("std_password");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.Students)
+                .HasForeignKey(d => d.BranchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Student_Branch");
+
+            entity.HasOne(d => d.Track).WithMany(p => p.Students)
+                .HasForeignKey(d => d.TrackId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Student_Track");
         });
 
         modelBuilder.Entity<StudentExamGrade>(entity =>
@@ -424,17 +428,11 @@ public partial class ITI_EXAMContext : DbContext
             entity.ToTable("Topic");
 
             entity.Property(e => e.TopId).HasColumnName("top_id");
-            entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TopName)
                 .IsRequired()
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("top_name");
-
-            entity.HasOne(d => d.Crs).WithMany(p => p.TopicsNavigation)
-                .HasForeignKey(d => d.CrsId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Topic_Course");
         });
 
         modelBuilder.Entity<Track>(entity =>
@@ -445,7 +443,6 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.SupId)
                 .IsRequired()
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("sup_id");
             entity.Property(e => e.TrackName)
                 .IsRequired()
@@ -480,12 +477,12 @@ public partial class ITI_EXAMContext : DbContext
 
         modelBuilder.Entity<TrackCourseExam>(entity =>
         {
-            entity.HasKey(e => new { e.ExamId, e.ExameDate });
+            entity.HasKey(e => new { e.ExamId, e.ExamDate });
 
             entity.ToTable("Track_Course_Exam");
 
             entity.Property(e => e.ExamId).HasColumnName("Exam_id");
-            entity.Property(e => e.ExameDate).HasColumnName("Exame_date");
+            entity.Property(e => e.ExamDate).HasColumnName("Exam_date");
             entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TrId).HasColumnName("tr_id");
 

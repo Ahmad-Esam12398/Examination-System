@@ -1,5 +1,6 @@
 ﻿using Examination_System.Data;
 using Examination_System.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Examination_System.Repos;
@@ -13,13 +14,48 @@ public class QuestionRepo : IQuestionRepo
         _context = context;
     }
 
-    public IEnumerable<Question> GetAll()
+    public IEnumerable<Question> GetAll(string? InstructorId = null ,int? courseId =null)
     {
 
         try
         {
-            return _context.Questions.Include(q => q.Choices);
+            IEnumerable<Question> questions;
 
+            if(InstructorId != null && courseId !=null)
+            {
+                questions = _context.Questions.Include(q => q.Choice)
+                                            .Include(q => q.Crs)
+                                            .Where(q => q.CrsId == courseId && q.InsId == InstructorId);
+
+                //SqlParameter instructorIdParam = new SqlParameter("@InstructorId",InstructorId);
+                //SqlParameter courseIdParam = new SqlParameter("@courseId" ,courseId.ToString());
+
+                //questions =
+                //_context.Questions.FromSqlRaw($"exec Read_All_Questions_For_Course_By_Instructor @InstructorId ,@courseId" ,instructorIdParam,courseIdParam);
+            }
+            else if(InstructorId !=null)
+            {
+                questions = _context.Questions.Include(q => q.Choice)
+                                               .Include(q => q.Crs)        
+                                            .Where(q => q.InsId == InstructorId);
+                //SqlParameter instructorIdParam = new SqlParameter(InstructorId, System.Data.SqlDbType.VarChar);
+                //questions = _context.Questions.FromSql($"exec Read_All_Questions_For_Course_By_Instructor {instructorIdParam} ,{courseIdParam}");
+
+
+            }
+            else if(courseId != null)
+            {
+                questions = _context.Questions.Include(q => q.Choice)
+                                                .Include(q => q.Crs)
+                                                .Where(q => q.CrsId == courseId);
+            }
+            else
+            {
+                questions = _context.Questions.Include(q => q.Choice)
+                                                .Include(q => q.Crs);
+            }
+
+            return questions;
         }catch
         {
             throw new Exception("can't get all questions");
@@ -27,32 +63,23 @@ public class QuestionRepo : IQuestionRepo
 
     }
 
-    public IEnumerable<Question> GetAllQuestionsByInstructor(int instructorId)
-    {
-        throw new NotImplementedException(); 
-    }
-
-    public IEnumerable<Question> GetAllQuestionsForCourse(int courseId)
-    {
-        throw new NotImplementedException();
-    }
-
     public Question? GetById(int id)
     {
         try
         {
             return _context.Questions
-                            .Include(q => q.Choices)
+                            .Include(q => q.Choice)
                             .FirstOrDefault(q => q.QuesId == id);
         }
         catch
         {
+            throw;
             throw new Exception($"can't get question with id ={id}");
         }
 
     }
 
-    public IEnumerable<Question> GetQuestionsByInstructorForCourse(int instructorId, int courseId)
+    public IEnumerable<string> GetQuestionAvailableWeights()
     {
         throw new NotImplementedException();
     }
@@ -80,8 +107,11 @@ public class QuestionRepo : IQuestionRepo
             if (question == null)
                 return false;
 
+            _context.Choices.Remove(question.Choice);
             _context.Questions.Remove(question);
+         
             _context.SaveChanges();
+            
             return true;
         }
         catch
@@ -90,20 +120,21 @@ public class QuestionRepo : IQuestionRepo
         }
     }
 
-    public bool TryUpdate(int id, Question question)
+    public bool TryUpdate(Question question)
     {
-        Question existingQuestion = GetById(id);
-        if(existingQuestion == null)
-                throw new Exception($"There's no question with id ={id}");
+        Question existingQuestion = GetById(question.QuesId);
 
-        if (question.QuesId != id)
-            throw new Exception($"can't update question id");
-
-
+        if (existingQuestion == null)
+            throw new Exception($"can't update question");
 
         try
         {
-            _context.Questions.Update(question);
+            existingQuestion.QuesTittle = question.QuesTittle;
+            existingQuestion.QuesAnswer = question.QuesAnswer;
+            existingQuestion.QuesWeight = question.QuesWeight;
+            existingQuestion.Choice = question.Choice;
+            existingQuestion.Crs = question.Crs;
+
             _context.SaveChanges();
             return true;
         }

@@ -13,7 +13,7 @@ public partial class TrackCourseExam
 
     public int ExamId { get; set; }
 
-    public DateOnly ExameDate { get; set; }
+    public DateOnly ExamDate { get; set; }
 
     public virtual Course Crs { get; set; }
 
