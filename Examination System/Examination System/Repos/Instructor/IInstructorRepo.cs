@@ -7,6 +7,7 @@ namespace Examination_System.Repos.Instructor;
 
 public interface IInstructorRepo
 {
+    Task<Models.Instructor> GetInstructorById(string instructorId);
     IEnumerable<Course> GetInstructorCourses(string? instructorId);
     Task<List<Read_Exam_QuestionsResult>> Read_Exam_Questions(int id);
     Task<List<Read_All_Instructor_CoursesResult>> InstructorCourses(string instructorId);

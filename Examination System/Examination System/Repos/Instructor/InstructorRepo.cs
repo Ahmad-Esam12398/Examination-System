@@ -20,6 +20,10 @@ namespace Examination_System.Repos.Instructor
             db = context;
             dbProcedures = _dbProcedures;
         }
+        public async Task<Models.Instructor> GetInstructorById(string instructorId)
+        {
+            return await db.Instructors.FirstOrDefaultAsync(i => i.InsId == instructorId);
+        }
         public async Task<List<Read_Exam_QuestionsResult>> Read_Exam_Questions(int id)
         {
             //var check = db.Exams.FirstOrDefault(e => e.ExId == id);
