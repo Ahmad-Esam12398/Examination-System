@@ -401,18 +401,25 @@ go
 create proc Read_All_Questions_For_Course_By_Instructor @InstructorId varchar(14), @courseId int
 as
 begin
-	select i.Ins_id, c.crs_id, c.crs_name, q.ques_tittle, q.ques_answer,
-	q.ques_tittle, ch.A, ch.B, ch.C, ch.D
+	begin try
+		select i.Ins_id, c.crs_id, c.crs_name, q.ques_tittle, q.ques_answer,
+		q.ques_tittle, ch.A, ch.B, ch.C, ch.D
+		from Question q
+		join Course c
+		on c.crs_id = q.crs_id
+		join Instructor i
+		on i.Ins_id = q.ins_id
+		join Choice ch
+		on ch.ques_id = q.ques_id
+		where
+		q.ins_id = @InstructorId and q.crs_id = @courseId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
 
-	from Question q
-	join Course c
-	on c.crs_id = q.crs_id
-	join Instructor i
-	on i.Ins_id = q.ins_id
-	join Choice ch
-	on ch.ques_id = q.ques_id
-	where
-	q.ins_id = @InstructorId and q.crs_id = @courseId;
 end
 
 go
@@ -420,13 +427,21 @@ go
 alter proc Read_All_Questions_For_Course @courseId int
 as
 begin
-	select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
-	from Question q
-	join Course c
-	on c.crs_id = q.crs_id
-	join Choice ch
-	on ch.ques_id = q.ques_id
-	where q.crs_id = @courseId
+	begin try
+		select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
+		from Question q
+		join Course c
+		on c.crs_id = q.crs_id
+		join Choice ch
+		on ch.ques_id = q.ques_id
+		where q.crs_id = @courseId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+
 end
 
 go
@@ -451,7 +466,7 @@ end
 
 go
 
-create proc Read_Student_Grades_By_Student_Id @studentId int
+alter proc Read_Student_Grades_By_Student_Id @studentId int
 as
 begin
 	begin try
@@ -459,10 +474,12 @@ begin
 		from Student_Exam_Grade se
 		join Student s
 		on s.std_id = se.std_id
-		join Track_Course_Exam tce
-		on tce.Exam_id = se.Exam_id
+		join Track_Exam te
+		on te.Exam_id = se.Exam_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
 		join Course c
-		on c.crs_id = tce.crs_id
+		on c.crs_id = e.crs_id
 		where se.std_id = @studentId
 	end try
 	begin catch
@@ -521,20 +538,47 @@ end
 
 go
 
-create proc Read_Exam_Questions @ExamId int
+alter proc Read_Exam_Questions @ExamId int
 as
 begin
+	begin try
 	select q.ques_id, q.ques_tittle, 
 	case
 		when q.ques_type = 'M' then CONCAT_WS(', ', c.A, c.B, c.C, c.D)
 		when q.ques_type = 'T' then CONCAT_WS(', ', 'True', 'False')
-	end as 'Choices'
+	end as 'Choices',
+		case 
+		when q.ques_type = 'T' then
+		case
+		when q.ques_answer = 'A'
+			then 'True'
+		else
+			'False'
+		end
+	when q.ques_type = 'M' then
+		case 
+		when q.ques_answer = 'A'
+			then c.A
+		when q.ques_answer = 'B'
+			then c.B
+		when q.ques_answer = 'C'
+			then c.C
+		else
+			c.D
+		end
+	end as 'Model Answer'
 	from Exam_Question eq
 	join Question q
 	on q.ques_id = eq.Question_id
 	left join Choice c
 	on c.ques_id = q.ques_id
-	where eq.Exam_id = @ExamId
+	where eq.Exam_id = @ExamId;
+	exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
 end
 
 go
@@ -591,8 +635,59 @@ begin
 	select * from #t
 end
 
+go
+
+alter proc Read_All_Exams_For_CourseId @crsId int
+as
+begin
+	begin try
+		select e.Ex_id, e.Ex_grade, e.Ex_duration, c.crs_id, c.crs_name
+		from Exam e
+		join Course c
+		on c.crs_id = e.crs_id
+		where c.crs_id = @crsId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
 
 
+go
+
+create proc Delete_Exam_By_Id @id int
+as
+begin
+	begin try
+	if exists(select * from Track_Exam where Exam_id = @id)
+		throw 50000, 'Exam is assigned to track', 1;
+	else
+		delete from Exam where Ex_id = @id;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go 
+
+create proc Assign_Exam_For_Track @trackId int, @BranchId int, @ExamId int, @ExamDate dateTime
+as
+begin
+	begin try
+		insert into Track_Exam(tr_id, Branch_id, Exam_id, Exam_date)
+		values (@trackId, @BranchId, @ExamId, @ExamDate);
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
 
 
 

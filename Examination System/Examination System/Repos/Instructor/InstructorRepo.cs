@@ -26,57 +26,10 @@ namespace Examination_System.Repos.Instructor
         }
         public async Task<List<Read_Exam_QuestionsResult>> Read_Exam_Questions(int id)
         {
-            //var check = db.Exams.FirstOrDefault(e => e.ExId == id);
-            //var examQuestions = new List<ExamQuestionsViewModel>();
-
-
-            //using (var command = db.Database.GetDbConnection().CreateCommand())
-            //{
-            //    command.CommandText = "Read_Exam_Questions";
-            //    command.CommandType = CommandType.StoredProcedure;
-            //    command.Parameters.Add(new SqlParameter("@ExamId", id));
-
-            //    db.Database.OpenConnection();
-
-            //    using (var result = command.ExecuteReader())
-            //    {
-            //        while(result.Read())
-            //        {
-            //            var examQuestion = new ExamQuestionsViewModel()
-            //            {
-            //                Id = result.GetInt32(0),
-            //                Title = result.GetString(1),
-            //                Choices = result.GetString(2)
-            //            };
-            //            examQuestions.Add(examQuestion);
-            //        }
-            //    }
-            //}
             return await dbProcedures.Read_Exam_QuestionsAsync(id);
         }
         public async Task<List<Read_All_Instructor_CoursesResult>> InstructorCourses(string instructorId)
         {
-            //using (var command = db.Database.GetDbConnection().CreateCommand())
-            //{
-            //    command.CommandText = "Read_All_Instructor_Courses";
-            //    command.CommandType = CommandType.StoredProcedure;
-            //    command.Parameters.Add(new SqlParameter("@instructorId", instructorId));
-
-            //    db.Database.OpenConnection();
-
-            //    using (var result = command.ExecuteReader())
-            //    {
-            //        while (result.Read())
-            //        {
-            //            var course = new CourseViewModel()
-            //            {
-            //                Id = result.GetInt32(0),
-            //                Name = result.GetString(1)
-            //            };
-            //            InstructorCourses.Add(course);
-            //        }
-            //    }
-            //}
             return await dbProcedures.Read_All_Instructor_CoursesAsync(instructorId);
         }
         public async Task<List<Read_All_BranchesResult>> GetBranches()
@@ -91,7 +44,39 @@ namespace Examination_System.Repos.Instructor
         {
             return await dbProcedures.Read_Instructor_Courses_By_Instructor_IdAsync(instructorId);
         }
-
+        public async Task<List<Read_All_Exams_For_CourseIdResult>> GetAllExamsForCourseId(int courseId)
+        {
+            return await dbProcedures.Read_All_Exams_For_CourseIdAsync(courseId);
+        }
+        public async Task<List<Read_All_Exams_For_CourseIdResult>> GetAllExamsForMyCourses(List<Read_Instructor_Courses_By_Instructor_IdResult> source)
+        {
+            List<Read_All_Exams_For_CourseIdResult> result = new();
+            foreach (var course in source)
+            {
+                result.AddRange(await GetAllExamsForCourseId(course.crs_id));
+            }
+            return result;
+        }
+        public async Task GenerateExam(string InstructorId, int crsId, int TF, int duration)
+        {
+            await dbProcedures.Exam_GenerationAsync(InstructorId, crsId, TF, duration);
+        }
+        public async Task<int> DeleteExam(int examId)
+        {
+            try
+            {
+                await dbProcedures.Delete_Exam_By_IdAsync(examId);
+                return 1;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+        public async Task AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime)
+        {
+                await db.Procedures.Assign_Exam_For_TrackAsync(trackId, BranchId, ExamId, datetime);
+        }
         public IEnumerable<Course>? GetInstructorCourses(string? instructorId)
         {
             try
@@ -108,5 +93,6 @@ namespace Examination_System.Repos.Instructor
                 throw new Exception("can't get instructor courses");
             }
         }
+
     }
 }

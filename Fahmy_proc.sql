@@ -1,4 +1,4 @@
-alter proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
+alter proc Exam_Generation @ins_id varchar(14), @crs_id int, @tf int, @duration int
 as
 begin
 	create table #t(ques_id int)
@@ -36,9 +36,9 @@ begin
 	begin try
 		declare @Ex_Id int
 		create table #last_Ex_Id(Ex_id int)
-		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade) 
+		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade, crs_id) 
 		OUTPUT INSERTED.Ex_id INTO #last_Ex_Id
-		values(60,100,60)
+		values(@duration,100,60, @crs_id)
 		select @Ex_Id = Ex_id from #last_Ex_Id
 		drop table #last_Ex_Id
 		select @Ex_Id
@@ -59,7 +59,7 @@ begin
 	
 end
 
-exec Exam_Generation 29040512000017,2,2
+exec Exam_Generation 29040512000017,2,3
 
 go
 

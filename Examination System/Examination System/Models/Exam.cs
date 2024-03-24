@@ -15,9 +15,11 @@ public partial class Exam
 
     public int ExPassGrade { get; set; }
 
+    public int CrsId { get; set; }
+
     public virtual ICollection<StudentExamGrade> StudentExamGrades { get; set; } = new List<StudentExamGrade>();
 
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
 
-    public virtual ICollection<TrackCourseExam> TrackCourseExams { get; set; } = new List<TrackCourseExam>();
+    public virtual ICollection<TrackExam> TrackExams { get; set; } = new List<TrackExam>();
 }

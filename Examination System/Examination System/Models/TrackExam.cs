@@ -5,17 +5,17 @@ using System.Collections.Generic;
 
 namespace Examination_System.Models;
 
-public partial class TrackCourseExam
+public partial class TrackExam
 {
     public int TrId { get; set; }
 
-    public int CrsId { get; set; }
+    public int BranchId { get; set; }
 
     public int ExamId { get; set; }
 
-    public DateOnly ExamDate { get; set; }
+    public DateTime ExamDate { get; set; }
 
-    public virtual Course Crs { get; set; }
+    public virtual Branch Branch { get; set; }
 
     public virtual Exam Exam { get; set; }
 

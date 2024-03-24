@@ -14,4 +14,10 @@ public interface IInstructorRepo
     Task<List<Read_All_BranchesResult>> GetBranches();
     Task<List<Read_All_TracksResult>> GetTracks();
     Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> GetInstructorData(string instructorId);
+    Task<List<Read_All_Exams_For_CourseIdResult>> GetAllExamsForCourseId(int courseId);
+    Task<List<Read_All_Exams_For_CourseIdResult>> GetAllExamsForMyCourses(List<Read_Instructor_Courses_By_Instructor_IdResult> source);
+    Task GenerateExam(string InstructorId, int crsId, int TF, int duration);
+    Task<int> DeleteExam(int examId);
+    Task AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime);
+
 }
