@@ -56,6 +56,7 @@ public class QuestionRepo : IQuestionRepo
             }
 
             return questions;
+
         }catch
         {
             throw new Exception("can't get all questions");
