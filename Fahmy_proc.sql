@@ -1,4 +1,4 @@
-create proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
+alter proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
 as
 begin
 	create table #t(ques_id int)
@@ -8,35 +8,43 @@ begin
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@tf AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''T'' and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@tf AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''T'' and q.ins_id=@ins_id and q.crs_id=@crs_id
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@mcq2 AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''M'' and q.ques_weight=2 and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@mcq2 AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''M'' and q.ques_weight=2 and q.ins_id=@ins_id and q.crs_id=@crs_id 
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@mcq3 AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''M'' and q.ques_weight=3 and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@mcq3 AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''M'' and q.ques_weight=3 and q.ins_id=@ins_id and q.crs_id=@crs_id 
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	begin try
-	select * from #t
+		declare @Ex_Id int
+		create table #last_Ex_Id(Ex_id int)
+		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade) 
+		OUTPUT INSERTED.Ex_id INTO #last_Ex_Id
+		values(60,100,60)
+		select @Ex_Id = Ex_id from #last_Ex_Id
+		drop table #last_Ex_Id
+		select @Ex_Id
+
 		insert into Exam_Question
-		select ques_id
+		select @Ex_Id, ques_id
 		from #t
 		if(@@ROWCOUNT = 0)
 			throw 50000, 'Exam already exist', 2;
@@ -258,3 +266,45 @@ begin
 			where std_id=@std_id and Exam_id=@Exam_id
 		end
 end
+
+go 
+
+
+alter proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
+as
+begin
+	create table #t(ques_tittle varchar(max),Choices varchar(max),student_answer varchar(1),model_answer varchar(1))
+
+	declare c1 cursor
+	for select ste.Question_id,q.ques_tittle,ste.answer,q.ques_answer,q.ques_type
+		from Student_Take_Exam ste, Question q
+		where ste.Exam_id=@examId and ste.std_id=@studentId and ste.Question_id=q.ques_id
+	for read only
+
+	declare @ques_id int,@ques_tittle varchar(max), @student_answer varchar(1), @ques_answer varchar(1),@ques_type varchar(1)
+	open c1
+	fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+	while @@FETCH_STATUS=0
+		begin
+			if @ques_type='M'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					from Choice c
+					where c.ques_id=@ques_id
+				end
+			else if @ques_type='T'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+				end
+
+			fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+		end
+	close c1
+	deallocate c1
+	select * from #t
+end
+
+exec Read_Questions_With_Students_Answers 1,12345678901234
+
