@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Examination_System.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Examination_System.Filters;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
     public class AccountController: Controller
     {
         private readonly ILoginRepo loginRepo;

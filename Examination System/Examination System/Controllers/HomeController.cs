@@ -23,9 +23,6 @@ namespace Examination_System.Controllers
 
         public IActionResult Privacy()
         {
-            int x=0;
-            int y=5;
-            int z = y / x;
             return View();
         }
 

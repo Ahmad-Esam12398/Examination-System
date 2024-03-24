@@ -1,11 +1,15 @@
-﻿using Examination_System.Models;
+﻿using Examination_System.Filters;
+using Examination_System.Models;
 using Examination_System.Repos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers;
 
+[ExceptionFiltercustomed]
+
 public class QuestionController : Controller
 {
+
     private readonly IQuestionRepo _questionRepo;
 
     public QuestionController(IQuestionRepo questionRepo)
