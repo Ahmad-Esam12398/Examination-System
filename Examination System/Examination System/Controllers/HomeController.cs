@@ -1,9 +1,12 @@
+using Examination_System.Filters;
 using Examination_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -20,6 +23,9 @@ namespace Examination_System.Controllers
 
         public IActionResult Privacy()
         {
+            int x=0;
+            int y=5;
+            int z = y / x;
             return View();
         }
 
