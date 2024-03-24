@@ -20,6 +20,7 @@ namespace Examination_System
 
             builder.Services.AddDbContext<ITI_EXAMContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IITI_EXAMContextProcedures, ITI_EXAMContextProcedures>();
             builder.Services.AddScoped<IAdminRepo, AdminRepo>();
             builder.Services.AddScoped<IInstructorRepo, InstructorRepo>();
             builder.Services.AddScoped<IStudentRepo, StudentRepo>();

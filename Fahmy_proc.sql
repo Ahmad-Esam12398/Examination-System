@@ -1,4 +1,4 @@
-create proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
+alter proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
 as
 begin
 	create table #t(ques_id int)
@@ -8,27 +8,27 @@ begin
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@tf AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''T'' and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@tf AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''T'' and q.ins_id=@ins_id and q.crs_id=@crs_id
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@mcq2 AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''M'' and q.ques_weight=2 and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@mcq2 AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''M'' and q.ques_weight=2 and q.ins_id=@ins_id and q.crs_id=@crs_id 
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	SET @sql = '
 		INSERT INTO #t
-		SELECT TOP ' + CAST(@mcq3 AS NVARCHAR(10)) + ' i.ques_id
-		FROM Instructor_Course_Question i,Question q
-		where q.ques_type=''M'' and q.ques_weight=3 and i.ins_id=@ins_id and i.crs_id=@crs_id and i.ques_id=q.ques_id
+		SELECT TOP ' + CAST(@mcq3 AS NVARCHAR(10)) + ' q.ques_id
+		FROM Question q
+		where q.ques_type=''M'' and q.ques_weight=3 and q.ins_id=@ins_id and q.crs_id=@crs_id 
 		ORDER BY NEWID();
 	';
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
@@ -36,7 +36,7 @@ begin
 	begin try
 	select * from #t
 		insert into Exam_Question
-		select ques_id
+		select cast (IDENT_CURRENT('Exam') as int), ques_id
 		from #t
 		if(@@ROWCOUNT = 0)
 			throw 50000, 'Exam already exist', 2;
@@ -258,3 +258,6 @@ begin
 			where std_id=@std_id and Exam_id=@Exam_id
 		end
 end
+
+go 
+

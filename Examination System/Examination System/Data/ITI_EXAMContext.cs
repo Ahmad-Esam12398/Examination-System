@@ -47,11 +47,6 @@ public partial class ITI_EXAMContext : DbContext
     public virtual DbSet<Track> Tracks { get; set; }
 
     public virtual DbSet<TrackCourseExam> TrackCourseExams { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ITI_EXAM;Integrated Security=True;Encrypt=True; trust server certificate=true");
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>
@@ -64,8 +59,7 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.MgrId)
                 .IsRequired()
-                .HasMaxLength(14)
-                .IsUnicode(false);
+                .HasMaxLength(14);
 
             entity.HasOne(d => d.Mgr).WithMany(p => p.Branches)
                 .HasForeignKey(d => d.MgrId)
@@ -212,7 +206,6 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("Ins_id");
             entity.Property(e => e.InsMobile)
                 .HasMaxLength(11)
@@ -246,7 +239,6 @@ public partial class ITI_EXAMContext : DbContext
                         j.ToTable("Inst_assign_Branch");
                         j.IndexerProperty<string>("InstId")
                             .HasMaxLength(14)
-                            .IsUnicode(false)
                             .HasColumnName("inst_id");
                         j.IndexerProperty<int>("BranchId").HasColumnName("branch_id");
                     });
@@ -260,7 +252,6 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
@@ -298,7 +289,6 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.InsId)
                 .IsRequired()
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.QuesAnswer)
                 .IsRequired()
@@ -356,6 +346,16 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("std_password");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
+
+            entity.HasOne(d => d.Branch).WithMany(p => p.Students)
+                .HasForeignKey(d => d.BranchId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Student_Branch");
+
+            entity.HasOne(d => d.Track).WithMany(p => p.Students)
+                .HasForeignKey(d => d.TrackId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Student_Track");
         });
 
         modelBuilder.Entity<StudentExamGrade>(entity =>
@@ -438,7 +438,6 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.SupId)
                 .IsRequired()
                 .HasMaxLength(14)
-                .IsUnicode(false)
                 .HasColumnName("sup_id");
             entity.Property(e => e.TrackName)
                 .IsRequired()
@@ -473,12 +472,12 @@ public partial class ITI_EXAMContext : DbContext
 
         modelBuilder.Entity<TrackCourseExam>(entity =>
         {
-            entity.HasKey(e => new { e.ExamId, e.ExameDate });
+            entity.HasKey(e => new { e.ExamId, e.ExamDate });
 
             entity.ToTable("Track_Course_Exam");
 
             entity.Property(e => e.ExamId).HasColumnName("Exam_id");
-            entity.Property(e => e.ExameDate).HasColumnName("Exame_date");
+            entity.Property(e => e.ExamDate).HasColumnName("Exam_date");
             entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TrId).HasColumnName("tr_id");
 
@@ -498,6 +497,7 @@ public partial class ITI_EXAMContext : DbContext
                 .HasConstraintName("FK_Track_Course_Exam_Track");
         });
 
+        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 

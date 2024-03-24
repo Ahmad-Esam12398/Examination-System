@@ -1,0 +1,86 @@
+﻿@model Branch
+@{
+    ViewData["Title"] = "Index";
+    var branches = ViewData["Branches"] as List<Read_All_BranchesResult>;
+}
+
+<h1>Welcome Admin</h1>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Branch Id</th>
+            <th>Branch Name</th>
+            <th>Manager Id</th>
+        </tr>
+    <tbody>
+            @foreach (var branch in branches)
+        {
+            <tr>
+                <td>@branch.BranchId</td>
+                <td>@branch.BranchName</td>
+                <td>@branch.MgrId</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Add
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Generated Exam</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td><label asp-for="BranchName"></label></td>
+                        <td><input asp-for="BranchName" /></td>
+                        <td><span asp-validation-for="BranchName" class="text-danger"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label asp-for="MgrId"></label></td>
+                        <td><input asp-for="MgrId" /></td>
+                        <td><span asp-validation-for="MgrId" class="text-danger"></span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+<partial name="_ValidationScriptsPartial" />
+    <script>
+        $("#submit").click(function () {
+            $.ajax({
+                url: "/Admin/AddBranch",
+                type: "POST",
+                data: {
+                    BranchName: $("#BranchName").val(),
+                    MgrId: $("#MgrId").val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        alert("Branch Added Successfully");
+                        location.reload();
+                    }
+                    else {
+                        alert("Branch Not Added");
+                    }
+                }
+            })
+        })
+    </script>
+}
+
+
