@@ -140,7 +140,6 @@ begin
 		exec Show_Error;
 		exec Log_Error;
 	end catch
-
 end
 
 go
@@ -418,7 +417,7 @@ end
 
 go
 
-create proc Read_All_Questions_For_Course @courseId int
+alter proc Read_All_Questions_For_Course @courseId int
 as
 begin
 	select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
@@ -474,12 +473,12 @@ end
 
 go
 
-create proc Read_Instructor_Courses_By_Instructor_Id @instructorId int
+alter proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
 as
 begin
 	begin try
 		select 
-		c.crs_name, t.track_name, b.BranchName, count(s.std_id) as 'Number Of Students'
+		c.crs_id, c.crs_name, t.track_id, t.track_name, b.BranchId, b.BranchName, count(s.std_id) as 'Number Of Students'
 		from Instructor i
 		join Instructor_Teach_Course_For_Track_In_Branch itc
 		on itc.ins_id = i.Ins_id
@@ -492,7 +491,7 @@ begin
 		join Branch b
 		on itc.branch_id = b.BranchId
 		where itc.ins_id = @instructorId
-		group by c.crs_name, t.track_name, b.BranchName
+		group by c.crs_name, c.crs_id, t.track_id, t.track_name, b.BranchId, b.BranchName
 	end try
 	begin catch
 		exec Show_Error;

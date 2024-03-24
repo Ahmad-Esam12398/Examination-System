@@ -21,7 +21,11 @@ public partial class Student
 
     public int BranchId { get; set; }
 
+    public virtual Branch Branch { get; set; }
+
     public virtual ICollection<StudentExamGrade> StudentExamGrades { get; set; } = new List<StudentExamGrade>();
 
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
+
+    public virtual Track Track { get; set; }
 }

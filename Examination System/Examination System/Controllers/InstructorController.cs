@@ -1,6 +1,7 @@
 ﻿using Examination_System.Models;
 using Examination_System.Repos.Instructor;
 using Microsoft.AspNetCore.Authorization;
+using Examination_System.ViewModel.Instructor;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers
@@ -13,19 +14,14 @@ namespace Examination_System.Controllers
             instructorRepo = _instructorRepo;
         }
         [Authorize(Roles = "Instructor")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<Question> questionList = new List<Question>
-            {
-                new Question { QuesId = 1, QuesTittle = "What is your name?", Choice = new Choice 
-                { A = "Ahmed", B = "Ali", C = "Amr", D = "Omar"}
-                },
-                new Question { QuesId = 2, QuesTittle = "What is your age?" , Choice = new Choice
-                {A = "20", B = "25", C = "30", D = "35" }
-                },
-                new Question { QuesId = 3, QuesTittle = "What is your address?", Choice = new Choice
-                {A = "Cairo", B = "Giza", C = "Alex", D = "Aswan"} }
-            };
+            //List<ExamQuestionsViewModel> questionList = new List<ExamQuestionsViewModel>();
+            var questionList = await instructorRepo.Read_Exam_Questions(2);
+            var instructorData = await instructorRepo.GetInstructorData("29040512000017");
+
+            ViewBag.InstructorData = instructorData;
+
             return View(questionList);
         }
     }

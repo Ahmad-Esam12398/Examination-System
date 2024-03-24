@@ -1,6 +1,8 @@
-﻿@model IEnumerable<Question>
+﻿@using Examination_System.ViewModel.Instructor
+@model IEnumerable<Read_Exam_QuestionsResult>
 @{
     ViewData["Title"] = "Index";
+    var instructorData = ViewData["InstructorData"] as List<Read_Instructor_Courses_By_Instructor_IdResult>;
 }
 
 <h1>Index</h1>
@@ -8,7 +10,7 @@
 <!-- Button trigger modal -->
 
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
+    Generate Exam
 </button>
 
 <!-- Modal -->
@@ -22,27 +24,18 @@
             <div class="modal-body">
                 @foreach(var question in Model)
                 {
-                    <div class="card">
+                    <div class="card my-2">
                         <div class="card-header">
-                            @question.QuesTittle
+                            @question.ques_tittle
                         </div>
                         <div class="card-body">
+                            @foreach(var choice in question.Choices.Split(","))
+                            {
                                 <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
                                 <label class="form-check-label" for="answer">
-                                    @question.Choice.A
-                                </label>
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.B
-                                </label>                                
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.C
-                                </label>
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.D
-                                </label>
+                                    @choice
+                                </label> <br />
+                            }
                         </div>
                     </div>
                 }
@@ -54,4 +47,25 @@
         </div>
     </div>
 </div>
+<select name="courseId">
+    @foreach (var instructor in instructorData)
+    {
+        <option value="@instructor.crs_id">@instructor.crs_name</option>
+    }
+</select>
+<select name="BranchId">
+    @foreach (var instructor in instructorData)
+    {
+        <option value="@instructor.BranchId">@instructor.BranchName</option>
+    }
+</select>
+<select name="TrackId">
+    @foreach (var instructor in instructorData)
+    {
+        <option value="@instructor.track_id">@instructor.track_name</option>
+    }
+</select>
 </div>
+<script>
+
+</script>
