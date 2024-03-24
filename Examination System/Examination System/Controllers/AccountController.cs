@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authentication;
 
 namespace Examination_System.Controllers
 {
-    public class LoginController: Controller
+    public class AccountController: Controller
     {
         private readonly ILoginRepo loginRepo;
-        public LoginController(ILoginRepo _loginRepo)
+        public AccountController(ILoginRepo _loginRepo)
         {
             loginRepo = _loginRepo;
         }
@@ -52,6 +52,24 @@ namespace Examination_System.Controllers
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("Login");
+        }
+        [HttpGet]
+        public IActionResult Profile(string id)
+        {
+            id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+             var user = loginRepo.GetUserById(id);
+            return View(user);
+        }
+        [HttpPost]
+        public IActionResult Profile(UserViewModel user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+            loginRepo.changePassword(user);
+            return RedirectToAction("Login");
+
         }
 
     }

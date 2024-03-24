@@ -2,5 +2,5 @@
 
 public enum QuestionWeight
 {
-    Small , Medium ,Large
+    Small =1  , Medium  ,Large
 }

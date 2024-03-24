@@ -2,5 +2,5 @@
 
 public enum QuestionType
 {
-    MultipleChoices , TrueFalse
+    M , T
 }
