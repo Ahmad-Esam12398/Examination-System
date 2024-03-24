@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers
 {
+    [Authorize(Roles = "Instructor")]
     public class InstructorController : Controller
     {
         IInstructorRepo instructorRepo;
@@ -13,7 +14,6 @@ namespace Examination_System.Controllers
         {
             instructorRepo = _instructorRepo;
         }
-        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> Index()
         {
             //List<ExamQuestionsViewModel> questionList = new List<ExamQuestionsViewModel>();
