@@ -281,7 +281,7 @@ begin
 		where ste.Exam_id=@examId and ste.std_id=@studentId and ste.Question_id=q.ques_id
 	for read only
 
-	declare @ques_id int,@ques_tittle varchar(max), @student_answer varchar(1), @ques_answer varchar(1),@ques_type varchar(1)
+	declare @ques_id int,@ques_tittle varchar(max), @student_answer varchar(1), @ques_answer varchar(1),@ques_type varchar(1),@num int = 1
 	open c1
 	fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
 	while @@FETCH_STATUS=0
@@ -289,16 +289,16 @@ begin
 			if @ques_type='M'
 				begin
 					insert into #t
-					select @ques_tittle,CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					select CONCAT_WS('- ',@num,@ques_tittle),CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
 					from Choice c
 					where c.ques_id=@ques_id
 				end
 			else if @ques_type='T'
 				begin
 					insert into #t
-					select @ques_tittle,CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					select CONCAT_WS('- ',@num,@ques_tittle),CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
 				end
-
+			set @num = @num+1
 			fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
 		end
 	close c1

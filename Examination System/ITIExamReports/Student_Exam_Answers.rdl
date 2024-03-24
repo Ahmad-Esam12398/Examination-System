@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34714.143</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-03-24T04:09:26.7991383Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-03-24T22:25:01.9232330Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -372,10 +372,12 @@ IIf(Split(Fields!Choices.Value,",").Length &gt; 2,3,0)
     <ReportParameter Name="examId">
       <DataType>Integer</DataType>
       <Prompt>exam Id</Prompt>
+      <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="studentId">
       <DataType>String</DataType>
       <Prompt>student Id</Prompt>
+      <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>

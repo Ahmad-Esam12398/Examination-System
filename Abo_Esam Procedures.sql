@@ -556,12 +556,5 @@ begin
 	on c.ques_id = ste.Question_id
 end
 
-
-
-
-
-
-
-
-
+exec Read_Questions_With_Students_Answers 1,1
 
