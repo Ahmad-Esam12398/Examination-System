@@ -47,6 +47,7 @@ public partial class ITI_EXAMContext : DbContext
     public virtual DbSet<Track> Tracks { get; set; }
 
     public virtual DbSet<TrackCourseExam> TrackCourseExams { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>

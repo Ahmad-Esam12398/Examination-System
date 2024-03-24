@@ -1,8 +1,9 @@
 ﻿using Examination_System.Data;
 using Examination_System.Models;
+using Examination_System.ViewModels;
+using Microsoft.EntityFrameworkCore;
 using Examination_System.ViewModel.Instructor;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace Examination_System.Repos.Instructor
@@ -85,6 +86,23 @@ namespace Examination_System.Repos.Instructor
         public async Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> GetInstructorData(string instructorId)
         {
             return await dbProcedures.Read_Instructor_Courses_By_Instructor_IdAsync(instructorId);
+        }
+
+        public IEnumerable<Course>? GetInstructorCourses(string? instructorId)
+        {
+            try
+            {
+                IEnumerable<Course> instructorCourses = db.InstructorTeachCourseForTrackInBranches
+                                                    .Include(item => item.Crs)
+                                                    .Where(item => item.InsId == instructorId)
+                                                    .Select(item => item.Crs).Distinct();
+
+                return instructorCourses;
+            }
+            catch
+            {
+                throw new Exception("can't get instructor courses");
+            }
         }
     }
 }
