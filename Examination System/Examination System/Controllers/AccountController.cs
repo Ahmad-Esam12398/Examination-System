@@ -15,18 +15,20 @@ namespace Examination_System.Controllers
         {
             loginRepo = _loginRepo;
         }
-        public IActionResult Login()
+        public IActionResult Login(string Role)
         {
+            ViewBag.Role = Role;
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(UserViewModel login)
+        public async Task<IActionResult> Login(UserViewModel login, string Role)
         {
             if(!ModelState.IsValid)
             {
+
 				return View(login);
 			}
-            var user = loginRepo.AuthenticateUser(login);
+            var user = loginRepo.AuthenticateUser(login,Role);
             if (user == null)
             {
 				ModelState.AddModelError(string.Empty, "Invalid Login");
@@ -44,10 +46,14 @@ namespace Examination_System.Controllers
             {
 				return RedirectToAction("Index", "Student");
 			}
-			else
+			else if (user.Role == "Instructor")
             {
 				return RedirectToAction("Index", "Instructor");
 			}
+            else
+            {
+                return RedirectToAction("Index", "Admin");
+            }
 
         }
         public async Task<IActionResult> Logout()
