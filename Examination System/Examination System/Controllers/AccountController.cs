@@ -21,14 +21,14 @@ namespace Examination_System.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(UserViewModel login, string Role)
+        public async Task<IActionResult> Login(UserViewModel login)
         {
             if(!ModelState.IsValid)
             {
 
 				return View(login);
 			}
-            var user = loginRepo.AuthenticateUser(login,Role);
+            var user = loginRepo.AuthenticateUser(login);
             if (user == null)
             {
 				ModelState.AddModelError(string.Empty, "Invalid Login");

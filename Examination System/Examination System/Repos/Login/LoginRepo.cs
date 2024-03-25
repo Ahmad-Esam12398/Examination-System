@@ -1,6 +1,7 @@
 ﻿using Examination_System.Data;
 using Examination_System.Models;
 using Examination_System.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Examination_System.Repos.Login
 {
@@ -15,61 +16,28 @@ namespace Examination_System.Repos.Login
         {
             db = context;
         }
-        public UserViewModel AuthenticateUser(UserViewModel login, string Role)
+        public UserViewModel AuthenticateUser(UserViewModel login)
         {
-            if(Role == "Student")
+            var user = db.Users.Include(u => u.Role).FirstOrDefault(u => u.Id == login.Id && u.Password == login.Password);
+            if(user == null)
             {
-                if (db.Students.Any(s => s.StdId == login.Id && s.StdPassword == login.Password))
-                {
-                    var name = db.Students.Where(s => s.StdId == login.Id).Select(s => s.StdName).FirstOrDefault();
-                    return new UserViewModel { Id = login.Id,Password=login.Password, Role = "Student",Name = name};
-                }
+                return null;
             }
-            else if(Role == "Instructor")
-            {
-                if (db.Instructors.Any(i => i.InsId == login.Id && i.InsPassword == login.Password))
-                {
-                    var name = db.Instructors.Where(i => i.InsId == login.Id).Select(i => i.InsName).FirstOrDefault();
-                    return new UserViewModel { Id = login.Id,Password =login.Password , Role = "Instructor",Name = name };
-                }
-            }
-
-            /////add admin table then uncomment\\\\\\
-            //else if(Role == "Admin")
-            //{
-            //    if (db.Admins.Any(a => a.AdminId == login.Id && a.AdminPassword == login.Password))
-            //    {
-            //        var name = db.Admins.Where(a => a.AdminId == login.Id).Select(a => a.AdminName).FirstOrDefault();
-            //        return new UserViewModel { Id = login.Id,Password =login.Password , Role = "Admin",Name = name };
-            //    }
-            //}
-
-
-            //if (db.Students.Any(s => s.StdId == login.Id && s.StdPassword == login.Password))
-            //{
-            //    var name = db.Students.Where(s => s.StdId == login.Id).Select(s => s.StdName).FirstOrDefault();
-            //    return new UserViewModel { Id = login.Id,Password=login.Password, Role = "Student",Name = name};
-            //}
-
-            //if (db.Instructors.Any(i => i.InsId == login.Id && i.InsPassword == login.Password))
-            //{
-            //    var name = db.Instructors.Where(i => i.InsId == login.Id).Select(i => i.InsName).FirstOrDefault();
-            //    return new UserViewModel { Id = login.Id,Password =login.Password , Role = "Instructor",Name = name };
-            //}
-            return null;
+            var name = user.Name;
+            return new UserViewModel { Id = login.Id,Password=login.Password, Role = user.Role.RoleName, Name = name};
         }
         public UserViewModel GetUserById(string id)
         {
-            if (db.Students.Any(s => s.StdId == id))
+            if (db.Users.Any(u => u.Id == id))
             {
-                var name = db.Students.Where(s => s.StdId == id).Select(s => s.StdName).FirstOrDefault();
-                return new UserViewModel { Id = id, Role = "Student", Name = name };
-            }
-
-            if (db.Instructors.Any(i => i.InsId == id))
-            {
-                var name = db.Instructors.Where(i => i.InsId == id).Select(i => i.InsName).FirstOrDefault();
-                return new UserViewModel { Id = id, Role = "Instructor", Name = name };
+                var user = db.Users.Include(u => u.Role).FirstOrDefault(u => u.Id == id);
+                var name = user.Name;
+                if(user.Role.RoleName == "Student")
+                    return new UserViewModel { Id = id, Role = "Student", Name = name };
+                else if(user.Role.RoleName == "Instructor")
+                    return new UserViewModel { Id = id, Role = "Instructor", Name = name };
+                else if(user.Role.RoleName == "Admin")
+                    return new UserViewModel { Id = id, Role = "Admin", Name = name };
             }
             return null;
         }
@@ -77,14 +45,14 @@ namespace Examination_System.Repos.Login
         {
             if (user.Role == "Student")
             {
-                var student = db.Students.Find(user.Id);
-                student.StdPassword = user.Password;
+                var student = db.Users.Find(user.Id);
+                student.Password = user.Password;
                 db.SaveChanges();
             }
             else
             {
-                var instructor = db.Instructors.Find(user.Id);
-                instructor.InsPassword = user.Password;
+                var instructor = db.Users.Find(user.Id);
+                instructor.Password = user.Password;
                 db.SaveChanges();
             }
         }

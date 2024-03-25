@@ -187,15 +187,21 @@ end
 --
 go
 
-create proc Add_Student @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
+alter proc Add_Student @std_Id varchar(14), @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
 	begin try
-		insert into Student(std_name,std_password,std_mobile,std_birthDate,track_id,branch_id) values(@std_name,@std_password,@std_mobile,@std_birthDate,@track_id,@branch_id)
+		begin transaction
+		insert into Users(ID, Name, Password, Mobile, RoleId)
+		values(@std_Id, @std_name, @std_password, @std_mobile, 1);
+		insert into Student(std_id, std_birthDate, branch_id, track_id)
+		values(@std_Id, @std_birthDate, @branch_id, @track_id);
 		if(@@ROWCOUNT = 0)
 			throw 40000, 'Invalid Data', 2;
+		commit;
 	end try
 	begin catch
+		rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -206,17 +212,26 @@ end
 --
 go
 
-create proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
+alter proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
 	begin try
+		begin transaction
+		--update Student
+		--set std_name=@std_name, std_password=@std_password,std_mobile=@std_mobile,std_birthDate=@std_birthDate,track_id=@track_id,branch_id=@branch_id
+		--where std_id=@std_id;
 		update Student
-		set std_name=@std_name, std_password=@std_password,std_mobile=@std_mobile,std_birthDate=@std_birthDate,track_id=@track_id,branch_id=@branch_id
-		where std_id=@std_id
+		set branch_id = @branch_id, track_id = @track_id, std_birthDate = @std_birthDate
+		where std_id = @std_id;
+		update Users
+		set Name = @std_name, Password = @std_password, Mobile = @std_mobile
+		where Users.ID = @std_id;
 		if(@@ROWCOUNT = 0)
 			throw 50000, 'Invalid Data', 1;
+		commit;
 	end try
 	begin catch
+		rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -227,15 +242,19 @@ end
 --
 go
 
-create proc Delete_Student @std_id varchar(14)
+alter proc Delete_Student @std_id varchar(14)
 as
 begin
 	begin try
-		delete from Student where std_id=@std_id
+		begin transaction
+		delete from Student where std_id=@std_id;
+		delete from Users where Users.ID = @std_id;
 		if @@ROWCOUNT = 0
-			throw 50000, 'Course not found', 1
+			throw 50000, 'Course not found', 1;
+		commit;
 	end try
 	begin catch
+	rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)

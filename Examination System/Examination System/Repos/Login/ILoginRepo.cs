@@ -5,7 +5,7 @@ namespace Examination_System.Repos.Login
 {
     public interface ILoginRepo
     {
-       public UserViewModel AuthenticateUser(UserViewModel login, string Role);
+       public UserViewModel AuthenticateUser(UserViewModel login);
         public void changePassword(UserViewModel user);
         public UserViewModel GetUserById(string id);
 

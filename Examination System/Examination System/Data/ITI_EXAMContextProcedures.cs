@@ -324,7 +324,7 @@ namespace Examination_System.Data
             return _;
         }
 
-        public virtual async Task<List<Add_StudentResult>> Add_StudentAsync(string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<Add_StudentResult>> Add_StudentAsync(string std_Id, string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -335,6 +335,13 @@ namespace Examination_System.Data
 
             var sqlParameters = new []
             {
+                new SqlParameter
+                {
+                    ParameterName = "std_Id",
+                    Size = 14,
+                    Value = std_Id ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
                 new SqlParameter
                 {
                     ParameterName = "std_name",
@@ -376,7 +383,7 @@ namespace Examination_System.Data
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Add_StudentResult>("EXEC @returnValue = [dbo].[Add_Student] @std_name, @std_password, @std_mobile, @std_birthDate, @track_id, @branch_id", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Add_StudentResult>("EXEC @returnValue = [dbo].[Add_Student] @std_Id, @std_name, @std_password, @std_mobile, @std_birthDate, @track_id, @branch_id", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

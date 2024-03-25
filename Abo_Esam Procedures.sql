@@ -691,7 +691,7 @@ end
 
 go
 
-create proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
+alter proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
 as
 begin
 	begin try
@@ -708,6 +708,37 @@ begin
 		exec Log_Error;
 	end catch
 end
+
+go
+
+create proc Read_Track_From_Instructor_Course_Branch @instructorId varchar(14), @crsId int, @branchId int
+as
+begin
+	begin try
+		select t.track_id, t.track_name
+		from Instructor_Teach_Course_For_Track_In_Branch ictb
+		join Track t
+		on t.track_id = ictb.track_id
+		where ictb.ins_id = @instructorId and ictb.branch_id = @branchId and ictb.crs_id = @crsId;
+		if @@ROWCOUNT = 0
+			throw 50000, 'No courses found', 1;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go
+
+alter table Users
+add constraint UC_Phone unique (Mobile);
+
+go
+
+alter table Users
+	add constraint uniqueRolePlusId unique(ID, RoleId)
+
 
 
 
