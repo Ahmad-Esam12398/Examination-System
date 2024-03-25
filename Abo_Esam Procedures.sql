@@ -464,6 +464,8 @@ begin catch
 end catch
 end
 
+exec Read_Students_Data_By_Track_Id 11
+
 go
 
 alter proc Read_Student_Grades_By_Student_Id @studentId int
@@ -487,7 +489,7 @@ begin
 		exec Log_Error;
 	end catch
 end
-
+Read_Student_Grades_By_Student_Id 13579246801357
 go
 
 alter proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
