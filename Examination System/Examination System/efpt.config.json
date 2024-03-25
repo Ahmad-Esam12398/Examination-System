@@ -88,7 +88,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Track_Course_Exam]",
+         "Name": "[dbo].[Track_Exam]",
          "ObjectType": 0
       },
       {
@@ -132,6 +132,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[Assign_Exam_For_Track]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[Delete_Branch]",
          "ObjectType": 1
       },
@@ -145,6 +149,10 @@
       },
       {
          "Name": "[dbo].[Delete_Course_From_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Exam_By_Id]",
          "ObjectType": 1
       },
       {
@@ -193,6 +201,10 @@
       },
       {
          "Name": "[dbo].[Read_All_Courses]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_All_Exams_For_CourseId]",
          "ObjectType": 1
       },
       {

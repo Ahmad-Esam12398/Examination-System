@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Question>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container" id="content">
+    <div class="row justify-content-between m-3">
+        <a asp-action="Create" class="btn btn-primary col-1">
+            Create
+        </a>
+        <select name="CourseId" id="courseSelect" asp-items="@ViewBag.instructorCoursesSLVB" class="selectBox"></select>
+    </div>
+
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Tittle</th>
+                <th>Course</th>
+                <th>Type</th>
+                <th>Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Question question in Model)
+            {
+                <tr>
+                    <td>@question.QuesTittle</td>
+                    <td>@question.Crs.CrsName</td>
+                    <td>@question.QuesType</td>
+                    <td>@question.QuesWeight</td>
+                    <td>
+                        <a asp-action="Details" asp-route-questionId="@question.QuesId" class="m-2">
+                            <i class="fa-regular fa-eye"></i>
+                        </a>
+
+                        <a asp-action="Edit" asp-route-questionId="@question.QuesId" class="m-2">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <a asp-action="Delete" onclick="return confirm('Do you want to delte this question ?');" asp-route-courseId="@question.QuesId" class="m-2">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+
+                    </td>
+                
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/js/QuestionIndex.js"></script>
+
+
+
+

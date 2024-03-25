@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Examination_System.Models
 {
-    public partial class Read_All_Questions_For_Course_By_InstructorResult
+    public partial class Delete_Exam_By_IdResult
     {
     }
 }

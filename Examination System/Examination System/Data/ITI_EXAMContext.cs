@@ -46,7 +46,7 @@ public partial class ITI_EXAMContext : DbContext
 
     public virtual DbSet<Track> Tracks { get; set; }
 
-    public virtual DbSet<TrackCourseExam> TrackCourseExams { get; set; }
+    public virtual DbSet<TrackExam> TrackExams { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>
@@ -178,6 +178,7 @@ public partial class ITI_EXAMContext : DbContext
             entity.ToTable("Exam");
 
             entity.Property(e => e.ExId).HasColumnName("Ex_id");
+            entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.ExDuration).HasColumnName("Ex_duration");
             entity.Property(e => e.ExGrade).HasColumnName("Ex_grade");
             entity.Property(e => e.ExPassGrade).HasColumnName("Ex_passGrade");
@@ -470,28 +471,30 @@ public partial class ITI_EXAMContext : DbContext
                     });
         });
 
-        modelBuilder.Entity<TrackCourseExam>(entity =>
+        modelBuilder.Entity<TrackExam>(entity =>
         {
-            entity.HasKey(e => new { e.ExamId, e.ExamDate });
+            entity.HasKey(e => new { e.ExamId, e.ExamDate }).HasName("PK_Track_Course_Exam");
 
-            entity.ToTable("Track_Course_Exam");
+            entity.ToTable("Track_Exam");
 
             entity.Property(e => e.ExamId).HasColumnName("Exam_id");
-            entity.Property(e => e.ExamDate).HasColumnName("Exam_date");
-            entity.Property(e => e.CrsId).HasColumnName("crs_id");
+            entity.Property(e => e.ExamDate)
+                .HasColumnType("datetime")
+                .HasColumnName("Exam_date");
+            entity.Property(e => e.BranchId).HasColumnName("Branch_id");
             entity.Property(e => e.TrId).HasColumnName("tr_id");
 
-            entity.HasOne(d => d.Crs).WithMany(p => p.TrackCourseExams)
-                .HasForeignKey(d => d.CrsId)
+            entity.HasOne(d => d.Branch).WithMany(p => p.TrackExams)
+                .HasForeignKey(d => d.BranchId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Track_Course_Exam_Course");
+                .HasConstraintName("FK_Track_Course_Exam_Branch");
 
-            entity.HasOne(d => d.Exam).WithMany(p => p.TrackCourseExams)
+            entity.HasOne(d => d.Exam).WithMany(p => p.TrackExams)
                 .HasForeignKey(d => d.ExamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Track_Course_Exam_Exam");
 
-            entity.HasOne(d => d.Tr).WithMany(p => p.TrackCourseExams)
+            entity.HasOne(d => d.Tr).WithMany(p => p.TrackExams)
                 .HasForeignKey(d => d.TrId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Track_Course_Exam_Track");

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Examination_System.Models
 {
-    public partial class Read_Questions_With_Students_AnswersResult
+    public partial class Assign_Exam_For_TrackResult
     {
     }
 }

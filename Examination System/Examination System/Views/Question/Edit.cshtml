@@ -1,0 +1,44 @@
+﻿@model Question
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form class="col-6" asp-action="Edit" method="post">
+
+    <div>
+        <input asp-for="QuesId" hidden />
+        <input asp-form="QuesType" hidden />
+    </div>
+
+    <div class="m-3">
+        <label asp-for="QuesTittle"></label>
+        <textarea asp-for="QuesTittle" class="form-control" required></textarea>
+        <span asp-validation-for="QuesTittle" class="text-danger"></span>
+    </div>
+
+    <div class="m-3">
+        <label asp-for="CrsId" >Course</label>
+        <select asp-for="CrsId" asp-items="@ViewBag.InstructorCourses"></select>
+    </div>
+
+
+    <div class="m-3">
+        <label asp-for="QuesWeight"></label>
+        <select asp-for="QuesWeight" asp-items="@ViewBag.questionWeightsSL" class="form-select"></select>
+    </div>
+
+    <div id="choices">
+        @if(Model.QuesType == "M")
+        {
+            <partial name="_MultipleChoicesPartial" model="@Model"></partial>
+        }
+        else
+        {
+            <partial name="_TrueFalsePartial" model="@Model"></partial>
+        }
+    </div>
+    <input type="submit" value="Edit" class="btn btn-primary mb-2" /> <br />
+
+    <a class="btn btn-primary" asp-action="Index" asp-route-instrucorId="56072526000098">Back to list</a>
+</form>
