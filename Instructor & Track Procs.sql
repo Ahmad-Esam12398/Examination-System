@@ -82,16 +82,19 @@ end
 go
 
 -- Read_All_Instructors
-create proc Read_All_Instructors
+alter proc Read_All_Instructors
 as
 begin
-    select Ins_id, Ins_name, ins_password, Ins_mobile from Instructor
+    select Ins_id, u.Name, u.Password, u.Mobile 
+	from Instructor i
+	join Users u
+	on u.ID = i.Ins_id
 end
 
 go
 
 -- Add_Instructor
-create proc Add_Instructor 
+alter proc Add_Instructor 
     @Ins_id varchar(14), 
     @Ins_name varchar(25), 
     @ins_password varchar(15), 
@@ -99,12 +102,17 @@ create proc Add_Instructor
 as
 begin 
     begin try 
-        insert into Instructor(Ins_id, Ins_name, ins_password, Ins_mobile) 
-        values (@Ins_id, @Ins_name, @ins_password, @Ins_mobile)
-        if(@@ROWCOUNT = 0)
-            throw 40000, 'Invalid Data', 2;
+			begin transaction
+				insert into Instructor(Ins_id) 
+				values (@Ins_id);
+				insert into Users(ID, Name, Password, Mobile, RoleId)
+				values (@Ins_id, @Ins_name, @ins_password, @Ins_mobile, 2)
+				if(@@ROWCOUNT = 0)
+					throw 40000, 'Invalid Data', 2;
+			commit;
     end try
     begin catch
+		rollback;
         select error_number() as ErrorNumber;
         insert into 
             error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -116,7 +124,7 @@ end
 go
 
 -- Update_Instructor
-create proc Update_Instructor 
+alter proc Update_Instructor 
     @Ins_id varchar(14), 
     @Ins_name varchar(25), 
     @ins_password varchar(15), 
@@ -124,15 +132,21 @@ create proc Update_Instructor
 as
 begin 
     begin try
-        update Instructor 
-        set Ins_name = @Ins_name, 
-            ins_password = @ins_password, 
-            Ins_mobile = @Ins_mobile
-        where Ins_id = @Ins_id 
+		begin transaction
+        --update Instructor 
+        --set Ins_name = @Ins_name, 
+        --    ins_password = @ins_password, 
+        --    Ins_mobile = @Ins_mobile
+        --where Ins_id = @Ins_id ;
+		update Users
+		set Name = @Ins_name, Password = @ins_password, Mobile = @Ins_mobile
+		where Users.ID = @Ins_id;
         if(@@ROWCOUNT = 0)
             throw 50000, 'Invalid Data', 1;
+		commit;
     end try
     begin catch
+		rollback;
         select error_number() as ErrorNumber;
         insert into 
             error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -144,16 +158,20 @@ end
 go
 
 -- Delete_Instructor
-create proc Delete_Instructor 
+alter proc Delete_Instructor 
     @Ins_id varchar(14)
 as
 begin
     begin try
-        delete from Instructor where Ins_id = @Ins_id
+		begin transaction
+        delete from Instructor where Ins_id = @Ins_id;
+		delete from Users where ID = @Ins_id;
         if @@ROWCOUNT = 0
-            throw 50000, 'Instructor not found', 1
+            throw 50000, 'Instructor not found', 1;
+		commit;
     end try
     begin catch
+		rollback;
         select error_number() as ErrorNumber;
         insert into 
             error_log(errorNumber, errorMessage, errorProcedure, errorTime)

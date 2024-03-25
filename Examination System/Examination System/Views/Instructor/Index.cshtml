@@ -1,50 +1,21 @@
-﻿@model IEnumerable<Question>
+﻿@using Examination_System.ViewModel.Instructor
+@model IEnumerable<Read_Exam_QuestionsResult>
 @{
     ViewData["Title"] = "Index";
+    var instructorData = ViewData["InstructorData"] as List<Read_Instructor_Courses_By_Instructor_IdResult>;
+    var AllExams = ViewData["AllExams"] as List<Read_All_Exams_For_CourseIdResult>;
 }
 
 <h1>Index</h1>
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-</button>
-
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ExamModal" tabindex="-1" aria-labelledby="ExamModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Generated Exam</h1>
+                <h1 class="modal-title fs-5" id="ExamModalLabel">Generated Exam</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                @foreach(var question in Model)
-                {
-                    <div class="card">
-                        <div class="card-header">
-                            @question.QuesTittle
-                        </div>
-                        <div class="card-body">
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.A
-                                </label>
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.B
-                                </label>                                
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.C
-                                </label>
-                                <input class="form-check-input" type="radio" name="flexRadioDefault" id="answer">
-                                <label class="form-check-label" for="answer">
-                                    @question.Choice.D
-                                </label>
-                        </div>
-                    </div>
-                }
+            <div class="modal-body" id="ExamModalBody">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -53,4 +24,284 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="assignExamModal" tabindex="-1" aria-labelledby="assignExamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="assignExamModalLabel">Assign Exam To: </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label> Branch </label>
+                            </td>                            
+                            <td>
+                                <select name="BranchId">
+                                    <option value="-1">Select Branch</option>
+                                    @foreach (var instructor in instructorData)
+                                    {
+                                        <option value="@instructor.BranchId">@instructor.BranchName</option>
+                                    }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label> Track </label>
+                            </td>
+                            <td>
+                                <select name="TrackId" disabled>
+                                    
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <label for="datetime">Exam Date:</label>
+                <input type="date" class="form-control" id="datetime" name="datetime" min="@DateTime.Now.ToString(("yyyy-MM-dd"))" />
+                <label for="time">Exam Time:</label>
+                <input type="time" class="form-control" id="time" name="time" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="AssignFinal" data-id="-1">Assign</button>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="d-flex w-100 flex-row-reverse">
+    <div class="d-flex justify-content-end col-3 m-3">
+        <div class="bg-light p-4 rounded w-100">
+            <div class="form-group">
+                <label for="courseId" class="form-label">Course</label>
+                <select name="courseId" class="form-select">
+                    @foreach (var instructor in instructorData)
+                    {
+                        <option value="@instructor.crs_id">@instructor.crs_name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="TF" class="form-label">No. of TF Questions</label>
+                <input name="TF" type="number" max="10" min="0" id="TF" value="0" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="duration" class="form-label">Duration In Minutes</label>
+                <input name="duration" type="number" max="200" min="10" id="duration" value="10" class="form-control" />
+            </div>
+            <div class="w-100 text-center my-3">
+                <button class="btn btn-info" id="generateExam">
+                    <i class="fas fa-file-alt"></i> Generate Exam
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <table class="table table-hover text-center rounded">
+            <thead class="bg-info">
+                <tr>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Course Name
+                    </th>
+                    <th>
+                        Total Grade
+                    </th>
+                    <th>
+                        Duration
+                    </th>
+                    <th>
+                        Operations
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var exam in AllExams)
+                {
+                    <tr>
+                        <td>
+                            @exam.Ex_id
+                        </td>
+                        <td>
+                            @exam.crs_name
+                        </td>
+                        <td>
+                            @exam.Ex_grade
+                        </td>
+                        <td>
+                            @exam.Ex_duration
+                        </td>
+                        <td>
+                            <button class="btn btn-info modalShow" data-id="@exam.Ex_id">
+                                <i class="fa-solid fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-danger deleteExam" data-id="@exam.Ex_id">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </button>
+                            <button class="btn btn-primary assignExam" data-id="@exam.Ex_id" data-Courseid="@exam.crs_id">
+                                <i class="fa-solid fa-user-plus"></i> Assign
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script src="~/js/testfile.js"></script>
+    <script>
+        $('#generateExam').click(() => {
+            var course = $("select[name='courseId']").text().trim();
+            if (confirm(`Are You sure, Generate Exam in course ${course}?`)) {
+                $.ajax({
+                    url: "/Instructor/GenerateExam",
+                    type: "POST",
+                    data: {
+                        courseId: $("select[name='courseId']").val(),
+                        TF: $("input[name='TF']").val(),
+                        duration: $("input[name='duration']").val(),
+                    },
+                    success: function (data) {
+                        alert("Exam Generated Successfully!");
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert("Error");
+                    }
+                });
+            }
+        })
+        $(document).on('click', 'button.modalShow', function () {
+            var examId = $(this).data('id'); // get the exam ID
+            WriteExamQuestionsToModal(examId); // call the function to write the exam questions to the modal
+            // console.log(examId); // log the exam ID
+        });
+        function WriteExamQuestionsToModal(id) {
+            // $("div[class='modal-body']").html("");
+            $.ajax({
+                url: '/Instructor/GetExamQuestions',
+                type: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    console.log(data);
+                    var html = '';
+                    for (var i = 0; i < data.length; i++) {
+                        html += '<div class="card my-2">';
+                        html += '<div class="card-header">';
+                        html += data[i].ques_tittle;
+                        html += '</div>';
+                        html += '<div class="card-body">';
+                        var choices = data[i].choices.split(',');
+                        for (var j = 0; j < choices.length; j++) {
+                            if (choices[j].trim() == data[i].modelAnswer.trim()){
+                                html += '<input class="form-check-input mx-2" type="radio" checked>';
+                                html += '<label class="form-check-label text-success">';
+                            }
+                            else{
+                                html += '<input class="form-check-input mx-2" type="radio" disabled>';
+                                html += '<label class="form-check-label text-danger">';
+                            }
+                            html += choices[j];
+                            html += '</label> <br />';
+                        }
+                        html += '</div></div>';
+                        $("#ExamModalBody").html(html);
+                        $('#ExamModal').modal('show'); // open the modal
+                    }
+                },
+            });
+        }
+        $(document).on('click', 'button.deleteExam', function(){
+            var examId = $(this).data('id');
+            if (confirm(`Are You sure, Delete Exam with ID ${examId}?`)) {
+                $.ajax({
+                    url: "/Instructor/DeleteExam",
+                    type: "DELETE",
+                    data: {
+                        examId: examId
+                    },
+                    success: function (data) {
+                        alert("Exam Deleted Successfully!");
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert("Error");
+                    }
+                });
+            }
+        })
+        $(document).on('click', 'button.assignExam', function () {
+            var examId = $(this).data('id');
+            $('#AssignFinal').data('id', examId);
+            $('#AssignFinal').data('courseid', $(this).data('courseid'));
+            // console.log($(this).data('courseid'));
+            var targetSelect = $("#assignExamModal > div > div > div.modal-body > table > tbody > tr:nth-child(2) > td:nth-child(2) > select");
+            targetSelect.html("");
+            targetSelect.prop('disabled', true);
+            var BranchSelect = $("#assignExamModal > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2) > select");
+            BranchSelect.val(-1);
+            $('#assignExamModal').modal('show');
+        })
+        $(document).on('click', '#AssignFinal', function () {
+            var ExamId = $(this).data('id');
+            var ExamDate = $('#datetime').val();
+            var ExamTime = $('#time').val();
+            // console.log(ExamDate, ExamTime);
+            // debugger;
+            if ($("select[name='BranchId']").val() == -1 || $("select[name='TrackId']").val() === null){
+                alert("Plz Select valid branch and Track!")
+                return;
+            }
+            if(ExamDate == "" || ExamTime == ""){
+                alert("Plz Enter Date And Time of Exam!");
+                return;
+            }
+            $.ajax({
+                url: "/Instructor/AssignExamForTrack",
+                type: "PUT",
+                data: {
+                    ExamId: ExamId,
+                    BranchId: $("select[name='BranchId']").val(),
+                    TrackId: $("select[name='TrackId']").val(),
+                    ExamDate: ExamDate,
+                    ExamTime: ExamTime
+                },
+                success: function (data) {
+                    alert("Exam Assigned Successfully!");
+                    location.reload();
+                },
+                error: function (error) {
+                    alert("Error, Can't Be Assigned, Plz Assign valid Data!");
+                }
+            });
+        })
+        $(document).on("change", "#assignExamModal > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2) > select", function () {
+            var BranchId = $("#assignExamModal > div > div > div.modal-body > table > tbody > tr:nth-child(1) > td:nth-child(2) > select").val();
+            var crsId = $('#AssignFinal').data('courseid');
+            var targetSelect = $("#assignExamModal > div > div > div.modal-body > table > tbody > tr:nth-child(2) > td:nth-child(2) > select");
+            $.ajax({
+                url: "/Instructor/Read_Track_From_Instructor_Course_Branch",
+                type: "GET",
+                data: { BranchId: BranchId, crsId: crsId },
+                success: function (data) {
+                    targetSelect.html("");
+                    for (var i = 0; i < data.length; i++) {
+                        targetSelect.append(`<option value="${data[i].track_id}">${data[i].track_name}</option>`);
+                    }
+                    targetSelect.prop('disabled', false);
+                },
+                error: function (error) {
+                    alert("Error Getting Tracks");
+                }
+            })
+        })
+    </script>
+}
+

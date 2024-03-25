@@ -15,9 +15,11 @@ public partial class Track
 
     public virtual ICollection<InstructorTeachCourseForTrackInBranch> InstructorTeachCourseForTrackInBranches { get; set; } = new List<InstructorTeachCourseForTrackInBranch>();
 
+    public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+
     public virtual Instructor Sup { get; set; }
 
-    public virtual ICollection<TrackCourseExam> TrackCourseExams { get; set; } = new List<TrackCourseExam>();
+    public virtual ICollection<TrackExam> TrackExams { get; set; } = new List<TrackExam>();
 
     public virtual ICollection<Branch> Brs { get; set; } = new List<Branch>();
 

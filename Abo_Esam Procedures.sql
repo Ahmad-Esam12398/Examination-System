@@ -140,7 +140,6 @@ begin
 		exec Show_Error;
 		exec Log_Error;
 	end catch
-
 end
 
 go
@@ -402,32 +401,47 @@ go
 create proc Read_All_Questions_For_Course_By_Instructor @InstructorId varchar(14), @courseId int
 as
 begin
-	select i.Ins_id, c.crs_id, c.crs_name, q.ques_tittle, q.ques_answer,
-	q.ques_tittle, ch.A, ch.B, ch.C, ch.D
+	begin try
+		select i.Ins_id, c.crs_id, c.crs_name, q.ques_tittle, q.ques_answer,
+		q.ques_tittle, ch.A, ch.B, ch.C, ch.D
+		from Question q
+		join Course c
+		on c.crs_id = q.crs_id
+		join Instructor i
+		on i.Ins_id = q.ins_id
+		join Choice ch
+		on ch.ques_id = q.ques_id
+		where
+		q.ins_id = @InstructorId and q.crs_id = @courseId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
 
-	from Question q
-	join Course c
-	on c.crs_id = q.crs_id
-	join Instructor i
-	on i.Ins_id = q.ins_id
-	join Choice ch
-	on ch.ques_id = q.ques_id
-	where
-	q.ins_id = @InstructorId and q.crs_id = @courseId;
 end
 
 go
 
-create proc Read_All_Questions_For_Course @courseId int
+alter proc Read_All_Questions_For_Course @courseId int
 as
 begin
-	select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
-	from Question q
-	join Course c
-	on c.crs_id = q.crs_id
-	join Choice ch
-	on ch.ques_id = q.ques_id
-	where q.crs_id = @courseId
+	begin try
+		select c.crs_name, q.ques_tittle, ch.A, ch.B, ch.C, ch.D, q.ques_answer, q.ques_weight 
+		from Question q
+		join Course c
+		on c.crs_id = q.crs_id
+		join Choice ch
+		on ch.ques_id = q.ques_id
+		where q.crs_id = @courseId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+
 end
 
 go
@@ -526,39 +540,230 @@ end
 
 go
 
-create proc Read_Exam_Questions @ExamId int
+alter proc Read_Exam_Questions @ExamId int
 as
 begin
+	begin try
 	select q.ques_id, q.ques_tittle, 
 	case
 		when q.ques_type = 'M' then CONCAT_WS(', ', c.A, c.B, c.C, c.D)
 		when q.ques_type = 'T' then CONCAT_WS(', ', 'True', 'False')
-	end as 'Choices'
+	end as 'Choices',
+		case 
+		when q.ques_type = 'T' then
+		case
+		when q.ques_answer = 'A'
+			then 'True'
+		else
+			'False'
+		end
+	when q.ques_type = 'M' then
+		case 
+		when q.ques_answer = 'A'
+			then c.A
+		when q.ques_answer = 'B'
+			then c.B
+		when q.ques_answer = 'C'
+			then c.C
+		else
+			c.D
+		end
+	end as 'Model Answer'
 	from Exam_Question eq
 	join Question q
 	on q.ques_id = eq.Question_id
 	left join Choice c
 	on c.ques_id = q.ques_id
-	where eq.Exam_id = @ExamId
+	where eq.Exam_id = @ExamId;
+	exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
 end
 
 go
 
-create proc Read_Questions_With_Students_Answers @examId int, @studentId int
+--create proc Read_Questions_With_Students_Answers @examId int, @studentId int
+--as
+--begin
+--	select ste.Question_id, q.ques_tittle, 
+--	case
+--		when q.ques_type = 'M' then CONCAT_WS(', ', c.A, c.B, c.C, c.D)
+--		when q.ques_type = 'T' then CONCAT_WS(', ', 'True', 'False')
+--	end as 'Choices',
+--	ste.answer as 'Student Answer', q.ques_answer as 'Model Answer'
+--	from Student_Take_Exam ste
+--	join Question q
+--	on q.ques_id = ste.Question_id
+--	join Choice c
+--	on c.ques_id = ste.Question_id
+--end
+
+alter proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
 as
 begin
-	select ste.Question_id, q.ques_tittle, 
-	case
-		when q.ques_type = 'M' then CONCAT_WS(', ', c.A, c.B, c.C, c.D)
-		when q.ques_type = 'T' then CONCAT_WS(', ', 'True', 'False')
-	end as 'Choices',
-	ste.answer as 'Student Answer', q.ques_answer as 'Model Answer'
-	from Student_Take_Exam ste
-	join Question q
-	on q.ques_id = ste.Question_id
-	join Choice c
-	on c.ques_id = ste.Question_id
+	create table #t(ques_tittle varchar(max),Choices varchar(max),student_answer varchar(1),model_answer varchar(1))
+
+	declare c1 cursor
+	for select ste.Question_id,q.ques_tittle,ste.answer,q.ques_answer,q.ques_type
+		from Student_Take_Exam ste, Question q
+		where ste.Exam_id=@examId and ste.std_id=@studentId and ste.Question_id=q.ques_id
+	for read only
+
+	declare @ques_id int,@ques_tittle varchar(max), @student_answer varchar(1), @ques_answer varchar(1),@ques_type varchar(1)
+	open c1
+	fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+	while @@FETCH_STATUS=0
+		begin
+			if @ques_type='M'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					from Choice c
+					where c.ques_id=@ques_id
+				end
+			else if @ques_type='T'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+				end
+
+			fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+		end
+	close c1
+	deallocate c1
+	select * from #t
 end
 
-exec Read_Questions_With_Students_Answers 1,1
+go
+
+alter proc Read_All_Exams_For_CourseId @crsId int
+as
+begin
+	begin try
+		select e.Ex_id, e.Ex_grade, e.Ex_duration, c.crs_id, c.crs_name
+		from Exam e
+		join Course c
+		on c.crs_id = e.crs_id
+		where c.crs_id = @crsId;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+
+go
+
+create proc Delete_Exam_By_Id @id int
+as
+begin
+	begin try
+	if exists(select * from Track_Exam where Exam_id = @id)
+		throw 50000, 'Exam is assigned to track', 1;
+	else
+		delete from Exam where Ex_id = @id;
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go 
+
+create proc Assign_Exam_For_Track @trackId int, @BranchId int, @ExamId int, @ExamDate dateTime
+as
+begin
+	begin try
+		insert into Track_Exam(tr_id, Branch_id, Exam_id, Exam_date)
+		values (@trackId, @BranchId, @ExamId, @ExamDate);
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go
+
+alter proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
+as
+begin
+	begin try
+		select c.crs_id, c.crs_name, c.crs_duration
+		from Instructor_Teach_Course_For_Track_In_Branch ictb
+		join Course c
+		on c.crs_id = ictb.crs_id
+		where ictb.ins_id = @instructorId and ictb.branch_id = @branchId and ictb.track_id = @trackId;
+		if @@ROWCOUNT = 0
+			throw 50000, 'No courses found', 1;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go
+
+create proc Read_Track_From_Instructor_Course_Branch @instructorId varchar(14), @crsId int, @branchId int
+as
+begin
+	begin try
+		select t.track_id, t.track_name
+		from Instructor_Teach_Course_For_Track_In_Branch ictb
+		join Track t
+		on t.track_id = ictb.track_id
+		where ictb.ins_id = @instructorId and ictb.branch_id = @branchId and ictb.crs_id = @crsId;
+		if @@ROWCOUNT = 0
+			throw 50000, 'No courses found', 1;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+go
+
+alter table Users
+add constraint UC_Phone unique (Mobile);
+
+go
+
+alter table Users
+	add constraint uniqueRolePlusId unique(ID, RoleId)
+
+go
+
+create proc Read_Exams_For_Student_Id @studentId varchar(14)
+as
+	begin try
+		select *
+		from Student s
+		join Track_Exam te
+		on te.tr_id = s.track_id
+		where s.std_id = '29803121600573';
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+	end
+
+
+
+
+
+
+
+
 

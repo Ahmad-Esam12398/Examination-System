@@ -1,8 +1,11 @@
-﻿using Examination_System.Repos.Admin;
+﻿using Examination_System.Filters;
+using Examination_System.Repos.Admin;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
+
     public class AdminController : Controller
     {
         private readonly IAdminRepo adminRepo;

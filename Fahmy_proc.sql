@@ -1,4 +1,4 @@
-alter proc Exam_Generation @ins_id varchar(14), @crs_id int,@tf int
+alter proc Exam_Generation @ins_id varchar(14), @crs_id int, @tf int, @duration int
 as
 begin
 	create table #t(ques_id int)
@@ -38,7 +38,7 @@ begin
 		create table #last_Ex_Id(Ex_id int)
 		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade,crs_id) 
 		OUTPUT INSERTED.Ex_id INTO #last_Ex_Id
-		values(60,@Exam_Grade,@Exam_Grade/2,@crs_id)
+		values(@duration,@Exam_Grade,@Exam_Grade/2,@crs_id)
 		select @Ex_Id = Ex_id from #last_Ex_Id
 		drop table #last_Ex_Id
 		select @Ex_Id
@@ -59,7 +59,7 @@ begin
 	
 end
 
-exec Exam_Generation 29040512000017,2,2
+exec Exam_Generation 29040512000017,2,3
 
 go
 
@@ -187,15 +187,21 @@ end
 --
 go
 
-alter proc Add_Student @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
+alter proc Add_Student @std_Id varchar(14), @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
 	begin try
-		insert into Student(std_name,std_password,std_mobile,std_birthDate,track_id,branch_id) values(@std_name,@std_password,@std_mobile,@std_birthDate,@track_id,@branch_id)
+		begin transaction
+		insert into Users(ID, Name, Password, Mobile, RoleId)
+		values(@std_Id, @std_name, @std_password, @std_mobile, 1);
+		insert into Student(std_id, std_birthDate, branch_id, track_id)
+		values(@std_Id, @std_birthDate, @branch_id, @track_id);
 		if(@@ROWCOUNT = 0)
 			throw 40000, 'Invalid Data', 2;
+		commit;
 	end try
 	begin catch
+		rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -210,13 +216,22 @@ alter proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_passwo
 as
 begin
 	begin try
+		begin transaction
+		--update Student
+		--set std_name=@std_name, std_password=@std_password,std_mobile=@std_mobile,std_birthDate=@std_birthDate,track_id=@track_id,branch_id=@branch_id
+		--where std_id=@std_id;
 		update Student
-		set std_name=@std_name, std_password=@std_password,std_mobile=@std_mobile,std_birthDate=@std_birthDate,track_id=@track_id,branch_id=@branch_id
-		where std_id=@std_id
+		set branch_id = @branch_id, track_id = @track_id, std_birthDate = @std_birthDate
+		where std_id = @std_id;
+		update Users
+		set Name = @std_name, Password = @std_password, Mobile = @std_mobile
+		where Users.ID = @std_id;
 		if(@@ROWCOUNT = 0)
 			throw 50000, 'Invalid Data', 1;
+		commit;
 	end try
 	begin catch
+		rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -231,11 +246,15 @@ alter proc Delete_Student @std_id varchar(14)
 as
 begin
 	begin try
-		delete from Student where std_id=@std_id
+		begin transaction
+		delete from Student where std_id=@std_id;
+		delete from Users where Users.ID = @std_id;
 		if @@ROWCOUNT = 0
-			throw 50000, 'Course not found', 1
+			throw 50000, 'Course not found', 1;
+		commit;
 	end try
 	begin catch
+	rollback;
 		select error_number() as ErrorNumber;
 		insert into 
 			error_log(errorNumber, errorMessage, errorProcedure, errorTime)
@@ -265,6 +284,45 @@ begin
 			set grade=@Grade
 			where std_id=@std_id and Exam_id=@Exam_id
 		end
+end
+
+go 
+
+
+alter proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
+as
+begin
+	create table #t(ques_tittle varchar(max),Choices varchar(max),student_answer varchar(1),model_answer varchar(1))
+
+	declare c1 cursor
+	for select ste.Question_id,q.ques_tittle,ste.answer,q.ques_answer,q.ques_type
+		from Student_Take_Exam ste, Question q
+		where ste.Exam_id=@examId and ste.std_id=@studentId and ste.Question_id=q.ques_id
+	for read only
+
+	declare @ques_id int,@ques_tittle varchar(max), @student_answer varchar(1), @ques_answer varchar(1),@ques_type varchar(1)
+	open c1
+	fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+	while @@FETCH_STATUS=0
+		begin
+			if @ques_type='M'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					from Choice c
+					where c.ques_id=@ques_id
+				end
+			else if @ques_type='T'
+				begin
+					insert into #t
+					select @ques_tittle,CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+				end
+
+			fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
+		end
+	close c1
+	deallocate c1
+	select * from #t
 end
 
 go 

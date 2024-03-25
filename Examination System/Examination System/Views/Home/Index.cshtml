@@ -1,8 +1,54 @@
-﻿@{
+﻿@model UserViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center">
+                <h1 class="display-4">Welcome to <span style="color: red; font-weight: bold; font-style: italic;">ITI</span> Examination System</h1>
+                <p class="lead">Manage exams, assessments, and grades with ease.</p>
+                <hr class="my-4">
+                <p>Get started by exploring our features:</p>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Create Exams</h5>
+                                <p class="card-text">Effortlessly create and manage exams for various subjects and classes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Manage Students</h5>
+                                <p class="card-text">Add, remove, and update student information to keep track of their progress.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">View Results</h5>
+                                <p class="card-text">Easily access and analyze exam results to monitor student performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    @if (User.Identity.Name == null)
+                    {
+                        <p class="mb-0">Ready to get started?</p>
+                        <a asp-area="" asp-controller="Account" asp-action="Login" class="btn btn-primary mt-2">Login</a>
+                    }
+					else{
+                        <p class="mb-0">Finished?</p>
+                        <a href="/Account/Logout" class="btn btn-primary mt-2">Logout</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,7 @@
-﻿using Examination_System.Repos.Student;
+﻿using Examination_System.Filters;
+using Examination_System.Repos.Student;
+using Examination_System.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using Microsoft.Reporting.WebForms;
@@ -8,6 +11,8 @@ using Examination_System.Models;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
+
     public class StudentController : Controller
     {
         private readonly IStudentRepo studentRepo;
@@ -17,6 +22,7 @@ namespace Examination_System.Controllers
             studentRepo = _studentRepo;
             _hostingEnvironment = hostingEnvironment;
         }
+        [Authorize(Roles = "Student")]
         public IActionResult Index()
         {
             return View();

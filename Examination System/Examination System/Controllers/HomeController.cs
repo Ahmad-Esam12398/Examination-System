@@ -1,9 +1,12 @@
+using Examination_System.Filters;
 using Examination_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -27,6 +30,11 @@ namespace Examination_System.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        //Access Denied Page when user is not authorized to access specified page
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -9,11 +9,7 @@ public partial class Instructor
 {
     public string InsId { get; set; }
 
-    public string InsName { get; set; }
-
-    public string InsPassword { get; set; }
-
-    public string InsMobile { get; set; }
+    public int RoleId { get; set; }
 
     public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
@@ -22,6 +18,8 @@ public partial class Instructor
     public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
 
     public virtual ICollection<Track> Tracks { get; set; } = new List<Track>();
+
+    public virtual User User { get; set; }
 
     public virtual ICollection<Branch> BranchesNavigation { get; set; } = new List<Branch>();
 }

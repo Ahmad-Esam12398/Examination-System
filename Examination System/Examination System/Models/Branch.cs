@@ -17,6 +17,10 @@ public partial class Branch
 
     public virtual Instructor Mgr { get; set; }
 
+    public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+
+    public virtual ICollection<TrackExam> TrackExams { get; set; } = new List<TrackExam>();
+
     public virtual ICollection<Instructor> Insts { get; set; } = new List<Instructor>();
 
     public virtual ICollection<Track> Tracks { get; set; } = new List<Track>();
