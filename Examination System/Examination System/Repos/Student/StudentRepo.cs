@@ -24,7 +24,6 @@ namespace Examination_System.Repos.Student
             var model = db.Students.Include(s => s.Track).ThenInclude(t => t.Crs).FirstOrDefault(s => s.StdId == studentId);
             if (model == null)
                 return null;
-
             return model.Track;
         }
         public Branch GetBranch(string studentId)
@@ -47,14 +46,19 @@ namespace Examination_System.Repos.Student
         {
             return db.StudentExamGrades.Where(x => x.StdId==StudentId).ToList();
         }
-        public async Task<List<Read_Exams_For_Student_IdResult>> GetIncomingExamsForStudent(string id)
+        public async Task<List<Read_Incoming_Exams_For_Student_IdResult>> GetIncomingExamsForStudent(string id)
         {
-            return await db.Procedures.Read_Exams_For_Student_IdAsync(id);
+            return await db.Procedures.Read_Incoming_Exams_For_Student_IdAsync(id);
         }
-
+        public int GetCourseExam(List<Read_Exams_For_Student_IdResult> source, int courseId)
+        {
+            return source.FirstOrDefault(e => e.crs_id == courseId).crs_id;
+        }
+        
         public async Task<List<Read_Exam_QuestionsResult>> GetExamQuestions(int id)
         {
             return await db.Procedures.Read_Exam_QuestionsAsync(id);
         }
+        
     }
 }

@@ -260,6 +260,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[Read_Incoming_Exams_For_Student_Id]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[Read_Instructor_Courses_By_Instructor_Id]",
          "ObjectType": 1
       },

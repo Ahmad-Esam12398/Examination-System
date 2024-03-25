@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Examination_System.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Examination_System.Controllers
 {
@@ -20,43 +21,41 @@ namespace Examination_System.Controllers
     {
         private readonly IStudentRepo studentRepo;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private Student currentStudent;
         public StudentController(IStudentRepo _studentRepo, IWebHostEnvironment hostingEnvironment)
         {
             studentRepo = _studentRepo;
             _hostingEnvironment = hostingEnvironment;
         }
-
-        public IActionResult Info(string id)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var model = studentRepo.GetStudentById(id);
-            var track = studentRepo.GetTrack(id);
-            var courses = studentRepo.GetCourses(id);
-            var branch = studentRepo.GetBranch(id);
-            ViewBag.Track = track;
-            ViewBag.Branch = branch;
-            ViewBag.Courses = courses;
-            return View(model);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            currentStudent = studentRepo.GetStudentById(userId);
+            base.OnActionExecuting(context);
         }
-
-        public IActionResult Courses(string id)
+        public IActionResult Info()
         {
-            var model = studentRepo.GetStudentById(id);
-            var track = studentRepo.GetTrack(id);
-            var Courses = studentRepo.GetCourses(id);
+            return View(currentStudent);
+        }
+        public IActionResult Courses()
+        {
+            var track = currentStudent.Track;
+            var Courses = track.Crs;
             ViewBag.track = track;
             ViewBag.courses = Courses;
-            return View(model);
+            return View(currentStudent);
         }
-
-        public IActionResult IncomingExams(string id)
+        public IActionResult StudentExamAnswers(int ExamId, string StudentId)
         {
-            var model = studentRepo.GetStudentById(id);
-            var track = studentRepo.GetTrack(id);
-            var branch = studentRepo.GetBranch(id);
-
+            return Redirect($"http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fStudent_Exam_Answers&rs:Command=Render&examId={ExamId}&studentId={StudentId}");
+        }
+        public async Task<IActionResult> IncomingExams()
+        {
+            var model = studentRepo.GetStudentById(currentStudent.StdId);
+            var Exams = await studentRepo.GetIncomingExamsForStudent(currentStudent.StdId);
+            ViewBag.Exams = Exams;
             return View(model);
         }
-
         [Authorize(Roles="Student")]
         public IActionResult Index()
         {

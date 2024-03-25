@@ -743,13 +743,20 @@ alter table Users
 
 go
 
-create proc Read_Exams_For_Student_Id @studentId varchar(14)
+alter proc Read_Exams_For_Student_Id @studentId varchar(14)
 as
+begin
 	begin try
-		select *
+		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade
 		from Student s
+		join Users u
+		on u.ID = s.std_id
 		join Track_Exam te
 		on te.tr_id = s.track_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
+		join Course c
+		on c.crs_id = e.crs_id
 		where s.std_id = '29803121600573';
 		exec Throw_Error_No_Rows_Affected;
 	end try
@@ -757,7 +764,34 @@ as
 		exec Show_Error;
 		exec Log_Error;
 	end catch
-	end
+end
+
+exec Read_Exams_For_Student_Id '29803121600573'
+
+go
+
+create proc Read_Incoming_Exams_For_Student_Id @studentId varchar(14)
+as
+begin
+	begin try
+		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade
+		from Student s
+		join Users u
+		on u.ID = s.std_id
+		join Track_Exam te
+		on te.tr_id = s.track_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
+		join Course c
+		on c.crs_id = e.crs_id
+		where s.std_id = @studentId and te.Exam_date > GETDATE();
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
 
 
 

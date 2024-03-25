@@ -70,6 +70,7 @@ namespace Examination_System.Data
             modelBuilder.Entity<Read_All_TracksResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Exam_QuestionsResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Read_Incoming_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Instructor_Courses_By_Instructor_IdResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Instructor_Courses_From_Track_BranchResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Questions_With_Students_AnswersResult>().HasNoKey().ToView(null);
@@ -1295,6 +1296,33 @@ namespace Examination_System.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<Read_Exams_For_Student_IdResult>("EXEC @returnValue = [dbo].[Read_Exams_For_Student_Id] @studentId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<Read_Incoming_Exams_For_Student_IdResult>> Read_Incoming_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "studentId",
+                    Size = 14,
+                    Value = studentId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<Read_Incoming_Exams_For_Student_IdResult>("EXEC @returnValue = [dbo].[Read_Incoming_Exams_For_Student_Id] @studentId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

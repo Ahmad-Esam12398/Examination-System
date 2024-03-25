@@ -9,6 +9,8 @@ namespace Examination_System.Repos.Student
         public ICollection<Course> GetCourses(string studentId);
         public Branch GetBranch(string studentId);
         public List<StudentExamGrade> GetPastExams(string StudentId);
-        Task<List<Read_Exams_For_Student_IdResult>> GetIncomingExamsForStudent(string id);
+        int GetCourseExam(List<Read_Exams_For_Student_IdResult> source, int courseId);
+        Task<List<Read_Incoming_Exams_For_Student_IdResult>> GetIncomingExamsForStudent(string id);
+
     }
 }

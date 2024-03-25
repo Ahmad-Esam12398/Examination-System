@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var Exams = ViewBag.Exams as List<Read_Incoming_Exams_For_Student_IdResult>;
+}
+@if(Exams.Count == 0){
+    <h1>No Incoming Exams</h1>
+}
+else{
+    <h1>Your Incoming Exams</h1>
+}
+@foreach(var exam in Exams){
+    <div class="card">
+        <div class="card-header">
+            <h3>@exam.Name</h3>
+        </div>
+        <div class="card-body">
+            <p>Duration: @exam.crs_name</p>
+            <p>Start Date: @exam.Ex_grade</p>
+            <p>End Date: @exam.Ex_passGrade</p>
+            <a asp-action="TakeExam" asp-route-ExamId="@exam.ID" class="btn btn-primary">Take Exam</a>
+        </div>
+    </div>
+}
