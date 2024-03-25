@@ -8,5 +8,6 @@ namespace Examination_System.Repos.Student
         public Track GetTrack(string studentId);
         public ICollection<Course> GetCourses(string studentId);
         public Branch GetBranch(string studentId);
+
     }
 }

@@ -37,6 +37,15 @@ namespace Examination_System.Controllers
             return View(model);
         }
 
+        public IActionResult IncomingExams(string id)
+        {
+            var model = studentRepo.GetStudentById(id);
+            var track = studentRepo.GetTrack(id);
+            var branch = studentRepo.GetBranch(id);
+
+            return View(model);
+        }
+
         [Authorize(Roles="Student")]
         public IActionResult Index()
         {

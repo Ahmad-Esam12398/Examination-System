@@ -23,7 +23,7 @@ namespace Examination_System.Repos.Student
 
         public Track GetTrack(string studentId)
         {
-            var model = db.Students.Include(s => s.Track).FirstOrDefault(s=>s.StdId == studentId);
+            var model = db.Students.Include(s => s.Track).ThenInclude(t=>t.Crs).FirstOrDefault(s=>s.StdId == studentId);
             if (model == null)                
                 return null;
 
@@ -47,6 +47,27 @@ namespace Examination_System.Repos.Student
 
             return track.Crs;
         }
+
+        //public ICollection<Exam> GetIncomingExamsForStudent(string studentId)
+        //{
+        //    var track = GetTrack(studentId);
+        //    var branch = GetBranch(studentId);
+
+        //    if (track == null || branch == null)
+        //    {
+        //        return new List<Exam>(); // Return an empty list if track or branch is not found
+        //    }
+
+        //    // Retrieve incoming exams for the student's track and branch
+        //    var incomingExams = db.Exams
+        //        .Include(exam => exam.TrackCourseExams)
+        //        .ThenInclude(tce => tce.Crs)
+        //        .Where(exam => exam.TrackCourseExams
+        //            .Any(tce => tce.TrId == track.TrackId && tce.BranchId == branch.BranchId && tce.ExamDate > DateTime.Now))
+        //        .ToList();
+
+        //    return incomingExams;
+        //}
 
         //public async Task<List<Read_All_TracksResult>> GetTracks()
         //{

@@ -4,19 +4,62 @@
     ViewData["Title"] = "Info";
     Layout = "~/Views/Shared/mainLayout.cshtml";
 }
+@section Styles{
+    <style>
+    .info-container {
+        text-align: center;
+        margin-top: 50px;
+    }
 
-<div>
+    .branch {
+        color: darkred;
+        font-weight: bold;
+        font-size: 24px;
+    }
+
+    .map-icon {
+        
+        font-size: 24px;
+    }
+
+    .track-name {
+        font-weight: bold;
+        color: darkred;
+        font-size: 20px;
+    }
+</style>
+}
+
+<div class="info-container">
     <h1>@Model.StdName</h1>
     <div>
-        <p>Branch Location: @Model.Branch.BranchName <i class="fas fa-map-marker-alt"></i></p>
+        <p class="branch text-danger">@Model.Branch.BranchName <i class="fas fa-map-marker-alt map-icon"></i></p>
     </div>
     <div>
-        <p>Track: @ViewBag.Track.TrackName</p>
+        <p><span class="track-name text-danger">@ViewBag.Track.TrackName Track</span></p>
     </div>
+    <p class="mt-3">
+        <strong>About the Track:</strong> This track offers indetailes courses about
+        [ 
+        @if (ViewBag.Courses != null)
+        {
+            var totalCourses = ViewBag.Courses.Count;
+            var count = 0;
+            foreach (var course in ViewBag.Courses)
+            {
+                <span>@course.CrsName</span>
+                count++;
+                if (count < totalCourses)
+                {
+                    <span>, </span>
+                }
+            }
+        } 
+        ]
+    </p>
     <div>
-        <!-- Buttons for courses, incoming exams, and previous exams -->
-        <a class="btn btn-primary" asp-action="Courses" asp-route-id="@Model.StdId">Courses</a>
-        <a class="btn btn-success" asp-action="IncomingExams" asp-route-id="@Model.StdId">Incoming Exams</a>
-        <a class="btn btn-info" asp-action="PreviousExams" asp-route-id="@Model.StdId">Previous Exams</a>
+        <a class="mx-2 btn btn-primary" asp-action="Courses" asp-route-id="@Model.StdId">Courses</a>
+        <a class="mx-2 btn btn-primary" asp-action="PreviousExams" asp-route-id="@Model.StdId">Previous Exams</a>
+        <a class="mx-2 btn btn-primary" asp-action="IncomingExams" asp-route-id="@Model.StdId">Incoming Exams</a>
     </div>
 </div>
