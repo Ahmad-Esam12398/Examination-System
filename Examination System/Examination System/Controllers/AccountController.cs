@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Examination_System.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Examination_System.Filters;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
     public class AccountController: Controller
     {
         private readonly ILoginRepo loginRepo;
@@ -13,18 +15,20 @@ namespace Examination_System.Controllers
         {
             loginRepo = _loginRepo;
         }
-        public IActionResult Login()
+        public IActionResult Login(string Role)
         {
+            ViewBag.Role = Role;
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(UserViewModel login)
+        public async Task<IActionResult> Login(UserViewModel login, string Role)
         {
             if(!ModelState.IsValid)
             {
+
 				return View(login);
 			}
-            var user = loginRepo.AuthenticateUser(login);
+            var user = loginRepo.AuthenticateUser(login,Role);
             if (user == null)
             {
 				ModelState.AddModelError(string.Empty, "Invalid Login");
@@ -42,16 +46,20 @@ namespace Examination_System.Controllers
             {
 				return RedirectToAction("Index", "Student");
 			}
-			else
+			else if (user.Role == "Instructor")
             {
 				return RedirectToAction("Index", "Instructor");
 			}
+            else
+            {
+                return RedirectToAction("Index", "Admin");
+            }
 
         }
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index","Home");
         }
         [HttpGet]
         public IActionResult Profile(string id)
