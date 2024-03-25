@@ -6,11 +6,12 @@ using Examination_System.Repos.Instructor;
 using Examination_System.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Examination_System.Controllers;
 
 [ExceptionFiltercustomed]
-
+[Authorize(Roles="instructor")]
 public class QuestionController : Controller
 {
 
