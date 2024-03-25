@@ -11,5 +11,9 @@ namespace Examination_System.Models
         public string Name { get; set; }
         public int Exam_id { get; set; }
         public DateTime Exam_date { get; set; }
+        public int crs_id { get; set; }
+        public string crs_name { get; set; }
+        public int Ex_grade { get; set; }
+        public int Ex_passGrade { get; set; }
     }
 }
