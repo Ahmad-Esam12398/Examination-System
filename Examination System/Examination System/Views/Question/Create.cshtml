@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<form class="col-6" asp-action="Create" asp-route-InsId="56072526000098">
+<form class="col-6" asp-action="Create">
 
     <div class="m-3">
         <label asp-for="QuesTittle"></label>
@@ -14,7 +14,7 @@
 
     <div class="m-3">
         <label asp-for="CrsId" >Course</label>
-        <select asp-for="CrsId" asp-items="@ViewBag.InstructorCourses"></select>
+        <select asp-for="CrsId" class="form-select" asp-items="@ViewBag.InstructorCourses"></select>
     </div>
 
     <div class="m-3">
@@ -29,39 +29,48 @@
 
     <div id="choices">
         
+        <partial name="_MultipleChoicesPartial" />
+
+
     </div>
-    <input type="submit" value="Create" class="btn btn-primary" />
+    <div>
+        <input type="submit" value="Create" class="mb-2 btn btn-primary" />
+
+    </div>
+
+    <a asp-action="Index" class="btn btn-outline-primary">Back to list</a>
+
 </form>
 
 <script>
-    loadPartial();
+   
+    // window.addEventListener("Load", () => {
+        console.log("Hello");
+        document.getElementsByTagName("select")[1].addEventListener("change", () => {
+            let xhr = new XMLHttpRequest();
+            let value = document.getElementsByTagName("select")[1].value;
+            console.log(value)
 
-    document.getElementsByTagName("select")[0].addEventListener('change', loadPartial);
-
-    function loadPartial(vent)
-    {
-        let xhr = new XMLHttpRequest();
-        let value = document.getElementsByTagName("select")[0].value;
-
-        if (value == "TrueFalse") {
-            xhr.open('GET', 'LoadTrueFalsePartial', true);
-        } else {
-            xhr.open('GET', 'LoadMultipleChoicesPartial', true);
-        }
-
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                document.getElementById('choices').innerHTML = xhr.responseText;
+            if (value == "T") {
+                xhr.open('GET', 'LoadTrueFalsePartial', true);
             } else {
-                console.error('Failed to load partial view. Error: ' + xhr.statusText);
+                xhr.open('GET', 'LoadMultipleChoicesPartial', true);
             }
-        };
-        xhr.onerror = function () {
-            console.error('Failed to load partial view. Network error.');
-        };
-        xhr.send();
 
-    }
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    console.log(xhr.responseText);
+                    document.getElementById('choices').innerHTML = xhr.responseText;
+                } else {
+                    console.error('Failed to load partial view. Error: ' + xhr.statusText);
+                }
+            };
+            xhr.onerror = function () {
+                console.error('Failed to load partial view. Network error.');
+            };
+            xhr.send();
+        });
+    // });
 </script>
 
