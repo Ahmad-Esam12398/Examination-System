@@ -1,4 +1,6 @@
-﻿using Examination_System.Filters;
+﻿using Examination_System.Data;
+using Examination_System.Models;
+using Examination_System.Filters;
 using Examination_System.Repos.Student;
 using Examination_System.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +24,39 @@ namespace Examination_System.Controllers
             studentRepo = _studentRepo;
             _hostingEnvironment = hostingEnvironment;
         }
-        [Authorize(Roles = "Student")]
+
+        public IActionResult Info(string id)
+        {
+            var model = studentRepo.GetStudentById(id);
+            var track = studentRepo.GetTrack(id);
+            var courses = studentRepo.GetCourses(id);
+            var branch = studentRepo.GetBranch(id);
+            ViewBag.Track = track;
+            ViewBag.Branch = branch;
+            ViewBag.Courses = courses;
+            return View(model);
+        }
+
+        public IActionResult Courses(string id)
+        {
+            var model = studentRepo.GetStudentById(id);
+            var track = studentRepo.GetTrack(id);
+            var Courses = studentRepo.GetCourses(id);
+            ViewBag.track = track;
+            ViewBag.courses = Courses;
+            return View(model);
+        }
+
+        public IActionResult IncomingExams(string id)
+        {
+            var model = studentRepo.GetStudentById(id);
+            var track = studentRepo.GetTrack(id);
+            var branch = studentRepo.GetBranch(id);
+
+            return View(model);
+        }
+
+        [Authorize(Roles="Student")]
         public IActionResult Index()
         {
             return View();
