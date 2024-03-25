@@ -1,4 +1,5 @@
-﻿using Examination_System.Enums;
+using Examination_System.Filters;
+using Examination_System.Enums;
 using Examination_System.Models;
 using Examination_System.Repos;
 using Examination_System.Repos.Instructor;
@@ -8,8 +9,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Examination_System.Controllers;
 
+[ExceptionFiltercustomed]
+
 public class QuestionController : Controller
 {
+
     private readonly IQuestionRepo _questionRepo;
     private readonly IInstructorRepo _instructorRepo;
 

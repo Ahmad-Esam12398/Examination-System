@@ -1,14 +1,17 @@
-﻿using Examination_System.Models;
+﻿using Examination_System.Filters;
+using Examination_System.Models;
 using Examination_System.Repos.Instructor;
 using Microsoft.AspNetCore.Authorization;
-using Examination_System.ViewModel.Instructor;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Examination_System.Controllers
 {
+
+    [ExceptionFiltercustomed]
     [Authorize(Roles = "Instructor")]
+
     public class InstructorController : Controller
     {
         const string INSTRUCTORID = "29040512000017";
@@ -34,7 +37,6 @@ namespace Examination_System.Controllers
 
             ViewBag.InstructorData = instructorData;
             ViewBag.AllExams = allExams;
-
             return View(questionList);
         }
         [HttpPost]
