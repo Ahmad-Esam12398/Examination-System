@@ -59,7 +59,7 @@ namespace Examination_System.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index","Home");
         }
         [HttpGet]
         public IActionResult Profile(string id)
