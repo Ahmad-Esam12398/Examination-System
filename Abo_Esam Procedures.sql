@@ -689,6 +689,26 @@ begin
 	end catch
 end
 
+go
+
+create proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
+as
+begin
+	begin try
+		select c.crs_id, c.crs_name, c.crs_duration
+		from Instructor_Teach_Course_For_Track_In_Branch ictb
+		join Course c
+		on c.crs_id = ictb.crs_id
+		where ictb.ins_id = @instructorId and ictb.branch_id = @branchId and ictb.track_id = @trackId;
+		if @@ROWCOUNT = 0
+			throw 50000, 'No courses found', 1;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
 
 
 

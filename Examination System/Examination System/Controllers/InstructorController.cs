@@ -75,6 +75,9 @@ namespace Examination_System.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
+        public async Task<List<Read_Track_From_Instructor_Course_BranchResult>> Read_Track_From_Instructor_Course_Branch(int crsId, int BranchId)
+        {
+            return await instructorRepo.Read_Track_From_Instructor_Course_Branch(currentInstructor.InsId, crsId, BranchId);
+        }
     }
 }

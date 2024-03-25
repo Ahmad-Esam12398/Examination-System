@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Examination_System.ViewModel.Instructor;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Microsoft.CodeAnalysis.Operations;
+using NuGet.DependencyResolver;
 
 namespace Examination_System.Repos.Instructor
 {
@@ -92,6 +94,10 @@ namespace Examination_System.Repos.Instructor
             {
                 throw new Exception("can't get instructor courses");
             }
+        }
+        public async Task<List<Read_Track_From_Instructor_Course_BranchResult>>Read_Track_From_Instructor_Course_Branch(string InstructorId, int crs, int BranchId)
+        {
+            return await dbProcedures.Read_Track_From_Instructor_Course_BranchAsync(InstructorId, crs, BranchId);
         }
 
     }
