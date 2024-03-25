@@ -10,6 +10,7 @@ using System.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Examination_System.Models;
+using System.Security.Claims;
 
 namespace Examination_System.Controllers
 {
@@ -63,8 +64,8 @@ namespace Examination_System.Controllers
         }
         public IActionResult StudentPastExams()
         {
-            List<StudentExamGrade> studentExamGrade = studentRepo.GetPastExams("13579246801357");
-            
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            List<StudentExamGrade> studentExamGrade = studentRepo.GetPastExams(userId);
             return View(studentExamGrade);
         }
     }
