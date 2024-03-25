@@ -7,10 +7,5 @@ namespace Examination_System.Models
 {
     public partial class Read_Students_Data_By_Track_IdResult
     {
-        public string std_id { get; set; }
-        public string std_name { get; set; }
-        public string std_mobile { get; set; }
-        public DateOnly std_birthDate { get; set; }
-        public string track_name { get; set; }
     }
 }

@@ -36,6 +36,8 @@ public partial class ITI_EXAMContext : DbContext
 
     public virtual DbSet<Question> Questions { get; set; }
 
+    public virtual DbSet<Role> Roles { get; set; }
+
     public virtual DbSet<Student> Students { get; set; }
 
     public virtual DbSet<StudentExamGrade> StudentExamGrades { get; set; }
@@ -46,7 +48,9 @@ public partial class ITI_EXAMContext : DbContext
 
     public virtual DbSet<Track> Tracks { get; set; }
 
-    public virtual DbSet<TrackCourseExam> TrackCourseExams { get; set; }
+    public virtual DbSet<TrackExam> TrackExams { get; set; }
+
+    public virtual DbSet<User> Users { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>
@@ -59,7 +63,8 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.MgrId)
                 .IsRequired()
-                .HasMaxLength(14);
+                .HasMaxLength(14)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.Mgr).WithMany(p => p.Branches)
                 .HasForeignKey(d => d.MgrId)
@@ -178,6 +183,7 @@ public partial class ITI_EXAMContext : DbContext
             entity.ToTable("Exam");
 
             entity.Property(e => e.ExId).HasColumnName("Ex_id");
+            entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.ExDuration).HasColumnName("Ex_duration");
             entity.Property(e => e.ExGrade).HasColumnName("Ex_grade");
             entity.Property(e => e.ExPassGrade).HasColumnName("Ex_passGrade");
@@ -206,21 +212,15 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
+                .IsUnicode(false)
                 .HasColumnName("Ins_id");
-            entity.Property(e => e.InsMobile)
-                .HasMaxLength(11)
-                .IsFixedLength()
-                .HasColumnName("Ins_mobile");
-            entity.Property(e => e.InsName)
-                .IsRequired()
-                .HasMaxLength(25)
-                .IsUnicode(false)
-                .HasColumnName("Ins_name");
-            entity.Property(e => e.InsPassword)
-                .IsRequired()
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("Ins_password");
+            entity.Property(e => e.RoleId).HasComputedColumnSql("((2))", true);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Instructors)
+                .HasPrincipalKey(p => new { p.Id, p.RoleId })
+                .HasForeignKey(d => new { d.InsId, d.RoleId })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Instructor_Users");
 
             entity.HasMany(d => d.BranchesNavigation).WithMany(p => p.Insts)
                 .UsingEntity<Dictionary<string, object>>(
@@ -239,6 +239,7 @@ public partial class ITI_EXAMContext : DbContext
                         j.ToTable("Inst_assign_Branch");
                         j.IndexerProperty<string>("InstId")
                             .HasMaxLength(14)
+                            .IsUnicode(false)
                             .HasColumnName("inst_id");
                         j.IndexerProperty<int>("BranchId").HasColumnName("branch_id");
                     });
@@ -252,6 +253,7 @@ public partial class ITI_EXAMContext : DbContext
 
             entity.Property(e => e.InsId)
                 .HasMaxLength(14)
+                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.CrsId).HasColumnName("crs_id");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
@@ -289,6 +291,7 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.InsId)
                 .IsRequired()
                 .HasMaxLength(14)
+                .IsUnicode(false)
                 .HasColumnName("ins_id");
             entity.Property(e => e.QuesAnswer)
                 .IsRequired()
@@ -318,6 +321,15 @@ public partial class ITI_EXAMContext : DbContext
                 .HasConstraintName("question_instructor_fk");
         });
 
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.Property(e => e.RoleId).ValueGeneratedNever();
+            entity.Property(e => e.RoleName)
+                .IsRequired()
+                .HasMaxLength(20)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<Student>(entity =>
         {
             entity.HasKey(e => e.StdId);
@@ -329,22 +341,8 @@ public partial class ITI_EXAMContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("std_id");
             entity.Property(e => e.BranchId).HasColumnName("branch_id");
+            entity.Property(e => e.RoleId).HasComputedColumnSql("((1))", true);
             entity.Property(e => e.StdBirthDate).HasColumnName("std_birthDate");
-            entity.Property(e => e.StdMobile)
-                .IsRequired()
-                .HasMaxLength(11)
-                .IsUnicode(false)
-                .HasColumnName("std_mobile");
-            entity.Property(e => e.StdName)
-                .IsRequired()
-                .HasMaxLength(25)
-                .IsUnicode(false)
-                .HasColumnName("std_name");
-            entity.Property(e => e.StdPassword)
-                .IsRequired()
-                .HasMaxLength(15)
-                .IsUnicode(false)
-                .HasColumnName("std_password");
             entity.Property(e => e.TrackId).HasColumnName("track_id");
 
             entity.HasOne(d => d.Branch).WithMany(p => p.Students)
@@ -356,6 +354,12 @@ public partial class ITI_EXAMContext : DbContext
                 .HasForeignKey(d => d.TrackId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Student_Track");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Students)
+                .HasPrincipalKey(p => new { p.Id, p.RoleId })
+                .HasForeignKey(d => new { d.StdId, d.RoleId })
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Student_Users");
         });
 
         modelBuilder.Entity<StudentExamGrade>(entity =>
@@ -438,6 +442,7 @@ public partial class ITI_EXAMContext : DbContext
             entity.Property(e => e.SupId)
                 .IsRequired()
                 .HasMaxLength(14)
+                .IsUnicode(false)
                 .HasColumnName("sup_id");
             entity.Property(e => e.TrackName)
                 .IsRequired()
@@ -470,31 +475,62 @@ public partial class ITI_EXAMContext : DbContext
                     });
         });
 
-        modelBuilder.Entity<TrackCourseExam>(entity =>
+        modelBuilder.Entity<TrackExam>(entity =>
         {
-            entity.HasKey(e => new { e.ExamId, e.ExamDate });
+            entity.HasKey(e => new { e.ExamId, e.ExamDate }).HasName("PK_Track_Course_Exam");
 
-            entity.ToTable("Track_Course_Exam");
+            entity.ToTable("Track_Exam");
 
             entity.Property(e => e.ExamId).HasColumnName("Exam_id");
-            entity.Property(e => e.ExamDate).HasColumnName("Exam_date");
-            entity.Property(e => e.CrsId).HasColumnName("crs_id");
+            entity.Property(e => e.ExamDate)
+                .HasColumnType("datetime")
+                .HasColumnName("Exam_date");
+            entity.Property(e => e.BranchId).HasColumnName("Branch_id");
             entity.Property(e => e.TrId).HasColumnName("tr_id");
 
-            entity.HasOne(d => d.Crs).WithMany(p => p.TrackCourseExams)
-                .HasForeignKey(d => d.CrsId)
+            entity.HasOne(d => d.Branch).WithMany(p => p.TrackExams)
+                .HasForeignKey(d => d.BranchId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Track_Course_Exam_Course");
+                .HasConstraintName("FK_Track_Course_Exam_Branch");
 
-            entity.HasOne(d => d.Exam).WithMany(p => p.TrackCourseExams)
+            entity.HasOne(d => d.Exam).WithMany(p => p.TrackExams)
                 .HasForeignKey(d => d.ExamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Track_Course_Exam_Exam");
 
-            entity.HasOne(d => d.Tr).WithMany(p => p.TrackCourseExams)
+            entity.HasOne(d => d.Tr).WithMany(p => p.TrackExams)
                 .HasForeignKey(d => d.TrId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Track_Course_Exam_Track");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(e => e.Mobile, "UC_Phone").IsUnique();
+
+            entity.HasIndex(e => new { e.Id, e.RoleId }, "uniqueRolePlusId").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(14)
+                .IsUnicode(false)
+                .HasColumnName("ID");
+            entity.Property(e => e.Mobile)
+                .IsRequired()
+                .HasMaxLength(11)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(30)
+                .IsUnicode(false);
+            entity.Property(e => e.Password)
+                .IsRequired()
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Users)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Users_Roles");
         });
 
         OnModelCreatingGeneratedProcedures(modelBuilder);

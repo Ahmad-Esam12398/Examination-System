@@ -1,0 +1,67 @@
+﻿@model Question
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form class="col-6" asp-action="Create" asp-route-InsId="56072526000098">
+
+    <div class="m-3">
+        <label asp-for="QuesTittle"></label>
+        <textarea asp-for="QuesTittle" class="form-control" required></textarea>
+        <span asp-validation-for="QuesTittle" class="text-danger"></span>
+    </div>
+
+    <div class="m-3">
+        <label asp-for="CrsId" >Course</label>
+        <select asp-for="CrsId" asp-items="@ViewBag.InstructorCourses"></select>
+    </div>
+
+    <div class="m-3">
+        <label asp-for="QuesType"></label>
+        <select asp-for="QuesType" asp-items="@ViewBag.questionTypeSL" class="form-select"></select>
+    </div>
+
+    <div class="m-3">
+        <label asp-for="QuesWeight"></label>
+        <select asp-for="QuesWeight" asp-items="@ViewBag.questionWeightsSL" class="form-select"></select>
+    </div>
+
+    <div id="choices">
+        
+    </div>
+    <input type="submit" value="Create" class="btn btn-primary" />
+</form>
+
+<script>
+    loadPartial();
+
+    document.getElementsByTagName("select")[0].addEventListener('change', loadPartial);
+
+    function loadPartial(vent)
+    {
+        let xhr = new XMLHttpRequest();
+        let value = document.getElementsByTagName("select")[0].value;
+
+        if (value == "TrueFalse") {
+            xhr.open('GET', 'LoadTrueFalsePartial', true);
+        } else {
+            xhr.open('GET', 'LoadMultipleChoicesPartial', true);
+        }
+
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                document.getElementById('choices').innerHTML = xhr.responseText;
+            } else {
+                console.error('Failed to load partial view. Error: ' + xhr.statusText);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Failed to load partial view. Network error.');
+        };
+        xhr.send();
+
+    }
+</script>
+

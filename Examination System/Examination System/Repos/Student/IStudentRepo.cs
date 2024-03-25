@@ -9,5 +9,6 @@ namespace Examination_System.Repos.Student
         public ICollection<Course> GetCourses(string studentId);
         public Branch GetBranch(string studentId);
 
+        public List<StudentExamGrade> GetPastExams(string StudentId);
     }
 }

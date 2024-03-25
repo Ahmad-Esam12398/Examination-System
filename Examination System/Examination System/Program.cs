@@ -29,7 +29,7 @@ namespace Examination_System
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    //options.LoginPath = "/Home/Login";
+                    options.LoginPath = "/Account/Login";
                     options.AccessDeniedPath = "/Home/AccessDenied";
                 });
 

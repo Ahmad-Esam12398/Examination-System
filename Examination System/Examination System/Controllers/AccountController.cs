@@ -3,18 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using Examination_System.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Examination_System.Filters;
 
 namespace Examination_System.Controllers
 {
-    public class LoginController: Controller
+    [ExceptionFiltercustomed]
+    public class AccountController: Controller
     {
         private readonly ILoginRepo loginRepo;
-        public LoginController(ILoginRepo _loginRepo)
+        public AccountController(ILoginRepo _loginRepo)
         {
             loginRepo = _loginRepo;
         }
-        public IActionResult Login()
+        public IActionResult Login(string Role)
         {
+            ViewBag.Role = Role;
             return View();
         }
         [HttpPost]
@@ -22,6 +25,7 @@ namespace Examination_System.Controllers
         {
             if(!ModelState.IsValid)
             {
+
 				return View(login);
 			}
             var user = loginRepo.AuthenticateUser(login);
@@ -42,16 +46,38 @@ namespace Examination_System.Controllers
             {
                 return RedirectToAction("Info", "Student", new {id = user.Id} );
 			}
-			else
+			else if (user.Role == "Instructor")
             {
 				return RedirectToAction("Index", "Instructor", new {id = user.Id});
 			}
+            else
+            {
+                return RedirectToAction("Index", "Admin");
+            }
 
         }
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
+            return RedirectToAction("Index","Home");
+        }
+        [HttpGet]
+        public IActionResult Profile(string id)
+        {
+            id = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+             var user = loginRepo.GetUserById(id);
+            return View(user);
+        }
+        [HttpPost]
+        public IActionResult Profile(UserViewModel user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+            loginRepo.changePassword(user);
             return RedirectToAction("Login");
+
         }
 
     }

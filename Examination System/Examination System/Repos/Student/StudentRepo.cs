@@ -83,5 +83,9 @@ namespace Examination_System.Repos.Student
         //{
         //    throw new NotImplementedException();
         //}
+        public List<StudentExamGrade> GetPastExams(string StudentId)
+        {
+            return db.StudentExamGrades.Where(x => x.StdId==StudentId).ToList();
+        }
     }
 }

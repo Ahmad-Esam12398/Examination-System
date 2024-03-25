@@ -7,5 +7,13 @@ namespace Examination_System.Models
 {
     public partial class Read_All_Questions_For_CourseResult
     {
+        public string crs_name { get; set; }
+        public string ques_tittle { get; set; }
+        public string A { get; set; }
+        public string B { get; set; }
+        public string C { get; set; }
+        public string D { get; set; }
+        public string ques_answer { get; set; }
+        public int ques_weight { get; set; }
     }
 }

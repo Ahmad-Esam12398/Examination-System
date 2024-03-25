@@ -8,8 +8,8 @@ namespace Examination_System.Models
     public partial class Read_All_InstructorsResult
     {
         public string Ins_id { get; set; }
-        public string Ins_name { get; set; }
-        public string ins_password { get; set; }
-        public string Ins_mobile { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public string Mobile { get; set; }
     }
 }

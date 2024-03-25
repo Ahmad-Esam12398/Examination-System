@@ -64,6 +64,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Roles]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Student]",
          "ObjectType": 0
       },
@@ -88,7 +92,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Track_Course_Exam]",
+         "Name": "[dbo].[Track_Exam]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
          "ObjectType": 0
       },
       {
@@ -132,6 +140,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[Assign_Exam_For_Track]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[Delete_Branch]",
          "ObjectType": 1
       },
@@ -145,6 +157,10 @@
       },
       {
          "Name": "[dbo].[Delete_Course_From_Track]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Delete_Exam_By_Id]",
          "ObjectType": 1
       },
       {
@@ -196,6 +212,10 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[Read_All_Exams_For_CourseId]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[Read_All_Instructor_Courses]",
          "ObjectType": 1
       },
@@ -236,7 +256,15 @@
          "ObjectType": 1
       },
       {
+         "Name": "[dbo].[Read_Exams_For_Student_Id]",
+         "ObjectType": 1
+      },
+      {
          "Name": "[dbo].[Read_Instructor_Courses_By_Instructor_Id]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Instructor_Courses_From_Track_Branch]",
          "ObjectType": 1
       },
       {
@@ -253,6 +281,10 @@
       },
       {
          "Name": "[dbo].[Read_Topics_Of_Course]",
+         "ObjectType": 1
+      },
+      {
+         "Name": "[dbo].[Read_Track_From_Instructor_Course_Branch]",
          "ObjectType": 1
       },
       {
