@@ -739,6 +739,25 @@ go
 alter table Users
 	add constraint uniqueRolePlusId unique(ID, RoleId)
 
+go
+
+create proc Read_Exams_For_Student_Id @studentId varchar(14)
+as
+	begin try
+		select *
+		from Student s
+		join Track_Exam te
+		on te.tr_id = s.track_id
+		where s.std_id = '29803121600573';
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+	end
+
+
 
 
 

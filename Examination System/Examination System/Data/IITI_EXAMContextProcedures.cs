@@ -49,6 +49,7 @@ namespace Examination_System.Data
         Task<List<Read_All_Track_CoursesResult>> Read_All_Track_CoursesAsync(int? trackId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_All_TracksResult>> Read_All_TracksAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Exam_QuestionsResult>> Read_Exam_QuestionsAsync(int? ExamId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Read_Exams_For_Student_IdResult>> Read_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> Read_Instructor_Courses_By_Instructor_IdAsync(string instructorId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Instructor_Courses_From_Track_BranchResult>> Read_Instructor_Courses_From_Track_BranchAsync(string instructorId, int? trackId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Questions_With_Students_AnswersResult>> Read_Questions_With_Students_AnswersAsync(int? examId, string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
