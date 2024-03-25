@@ -15,9 +15,9 @@ namespace Examination_System.Controllers
         {
             loginRepo = _loginRepo;
         }
-        public IActionResult Login(string Role)
+        public IActionResult Login()
         {
-            ViewBag.Role = Role;
+           
             return View();
         }
         [HttpPost]
@@ -25,13 +25,12 @@ namespace Examination_System.Controllers
         {
             if(!ModelState.IsValid)
             {
-
-				return View(login);
+                return View(login);
 			}
             var user = loginRepo.AuthenticateUser(login);
             if (user == null)
             {
-				ModelState.AddModelError(string.Empty, "Invalid Login");
+				ModelState.AddModelError(string.Empty, "Incorrect Id or Password");
 				return View(login);
 			}
 
