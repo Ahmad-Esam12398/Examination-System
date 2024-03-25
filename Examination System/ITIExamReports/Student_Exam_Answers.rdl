@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34714.143</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-03-24T22:25:01.9232330Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-03-25T02:42:28.3800013Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -59,34 +59,6 @@
     <ReportSection>
       <Body>
         <ReportItems>
-          <Textbox Name="Textbox1">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Left>5.07167in</Left>
-            <Height>0.25in</Height>
-            <Width>1in</Width>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
           <Textbox Name="Textbox2">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
@@ -104,7 +76,6 @@
             <rd:DefaultName>Textbox2</rd:DefaultName>
             <Height>0.25in</Height>
             <Width>1in</Width>
-            <ZIndex>1</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -345,7 +316,7 @@ IIf(Split(Fields!Choices.Value,",").Length &gt; 2,3,0)
             <Top>0.405in</Top>
             <Height>2.24167in</Height>
             <Width>6.91333in</Width>
-            <ZIndex>2</ZIndex>
+            <ZIndex>1</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -355,7 +326,7 @@ IIf(Split(Fields!Choices.Value,",").Length &gt; 2,3,0)
         </ReportItems>
         <Height>3.28333in</Height>
         <Style>
-          <BackgroundColor>LightGrey</BackgroundColor>
+          <BackgroundColor>WhiteSmoke</BackgroundColor>
         </Style>
       </Body>
       <Width>8.175in</Width>
@@ -372,12 +343,10 @@ IIf(Split(Fields!Choices.Value,",").Length &gt; 2,3,0)
     <ReportParameter Name="examId">
       <DataType>Integer</DataType>
       <Prompt>exam Id</Prompt>
-      <Hidden>true</Hidden>
     </ReportParameter>
     <ReportParameter Name="studentId">
       <DataType>String</DataType>
       <Prompt>student Id</Prompt>
-      <Hidden>true</Hidden>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>

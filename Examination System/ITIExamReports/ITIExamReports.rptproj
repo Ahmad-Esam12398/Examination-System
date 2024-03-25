@@ -54,7 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Report Include="Course_Topics.rdl" />
+    <Report Include="Exam.rdl" />
+    <Report Include="Instructor_Courses.rdl" />
     <Report Include="Student_Exam_Answers.rdl" />
+    <Report Include="Student_Exam_Grades.rdl" />
+    <Report Include="Track_Students.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>

@@ -34,11 +34,11 @@ begin
 	EXEC sp_executesql @sql, N'@ins_id varchar(14), @crs_id INT', @ins_id, @crs_id;
 
 	begin try
-		declare @Ex_Id int
+		declare @Ex_Id int, @Exam_Grade int = @tf+(@mcq2*2)+(@mcq3*3)
 		create table #last_Ex_Id(Ex_id int)
-		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade) 
+		insert into Exam(Ex_duration,Ex_grade,Ex_passGrade,crs_id) 
 		OUTPUT INSERTED.Ex_id INTO #last_Ex_Id
-		values(60,100,60)
+		values(60,@Exam_Grade,@Exam_Grade/2,@crs_id)
 		select @Ex_Id = Ex_id from #last_Ex_Id
 		drop table #last_Ex_Id
 		select @Ex_Id
@@ -64,7 +64,7 @@ exec Exam_Generation 29040512000017,2,2
 go
 
 ---------------------------------------------------------------------------------------
-create proc Exam_Answers @Ex_id int
+alter proc Exam_Answers @Ex_id int
 as
 begin
 	select q.ques_answer
@@ -77,7 +77,7 @@ exec Exam_Answers 1
 go
 
 ----------------------------------------------------------------------------------------
-create proc Exam_Correction @Ex_id int,@std_id varchar(14)
+alter proc Exam_Correction @Ex_id int,@std_id varchar(14)
 as
 begin
 	declare c1 cursor
@@ -102,7 +102,7 @@ begin
 	deallocate c1
 	
 	declare @grade float
-	set @grade = @Student_Grade_Sum/@Grade_Sum
+	set @grade = @Student_Grade_Sum/@Grade_Sum*100
 	exec Add_Grade_To_Student @std_id,@Ex_id,@grade
 	select @grade
 end
@@ -111,7 +111,7 @@ go
 
 -----------------------------------------------------------------------------------------
 --branch SP
-create proc Read_All_Branches
+alter proc Read_All_Branches
 as
 begin
 	select * from Branch
@@ -119,7 +119,7 @@ end
 --
 go
 
-create proc Add_Branch @Branch_Name varchar(25), @MgrId varchar(14)
+alter proc Add_Branch @Branch_Name varchar(25), @MgrId varchar(14)
 as
 begin
 	begin try
@@ -138,7 +138,7 @@ end
 --
 go
 
-create proc Update_Branch @Branch_Id int,@Branch_Name varchar(25), @MgrId varchar(14)
+alter proc Update_Branch @Branch_Id int,@Branch_Name varchar(25), @MgrId varchar(14)
 as
 begin
 	begin try
@@ -159,7 +159,7 @@ end
 --
 go
 
-create proc Delete_Branch @Branch_Id int
+alter proc Delete_Branch @Branch_Id int
 as
 begin
 	begin try
@@ -179,7 +179,7 @@ end
 ----student SP
 go
 
-create proc Read_All_Students
+alter proc Read_All_Students
 as
 begin
 	select * from Student
@@ -187,7 +187,7 @@ end
 --
 go
 
-create proc Add_Student @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
+alter proc Add_Student @std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
 	begin try
@@ -206,7 +206,7 @@ end
 --
 go
 
-create proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
+alter proc Update_Student @std_id varchar(14),@std_name varchar(25), @std_password varchar(15),@std_mobile varchar(11),@std_birthDate date,@track_id int,@branch_id int
 as
 begin
 	begin try
@@ -227,7 +227,7 @@ end
 --
 go
 
-create proc Delete_Student @std_id varchar(14)
+alter proc Delete_Student @std_id varchar(14)
 as
 begin
 	begin try
@@ -246,7 +246,7 @@ end
 --------------------------------------------------------------------------------------
 go
 
-create proc Add_Grade_To_Student @std_id varchar(14), @Exam_id int,@Grade float
+alter proc Add_Grade_To_Student @std_id varchar(14), @Exam_id int,@Grade float
 as
 begin
 	declare @exist int
@@ -308,3 +308,22 @@ end
 
 exec Read_Questions_With_Students_Answers 1,12345678901234
 
+alter proc Read_Student_Grades_By_Student_Id @studentId varchar(14)
+as
+begin
+	begin try
+		select c.crs_name,seg.grade
+		from Student_Exam_Grade seg,Exam e,Course c
+		where seg.Exam_id=e.Ex_id and e.crs_id=c.crs_id
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+exec Read_Student_Grades_By_Student_Id 13579246801357
+
+exec Read_Instructor_Courses_By_Instructor_Id 29040512000017
+
+exec Read_Exam_Questions 11

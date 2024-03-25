@@ -1,6 +1,6 @@
 ﻿using Examination_System.Repos.Student;
 using Microsoft.AspNetCore.Mvc;
-//using System.Web;
+using System.Web;
 using Microsoft.Reporting.WebForms;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -40,7 +40,7 @@ namespace Examination_System.Controllers
 
         public IActionResult StudentPastExams()
         {
-            List<StudentExamGrade> studentExamGrade = studentRepo.GetPastExams("12345678901234");
+            List<StudentExamGrade> studentExamGrade = studentRepo.GetPastExams("13579246801357");
             
             return View(studentExamGrade);
         }

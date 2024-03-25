@@ -450,9 +450,11 @@ begin catch
 end catch
 end
 
+exec Read_Students_Data_By_Track_Id 11
+
 go
 
-create proc Read_Student_Grades_By_Student_Id @studentId int
+alter proc Read_Student_Grades_By_Student_Id @studentId int
 as
 begin
 	begin try
@@ -460,10 +462,12 @@ begin
 		from Student_Exam_Grade se
 		join Student s
 		on s.std_id = se.std_id
-		join Track_Course_Exam tce
-		on tce.Exam_id = se.Exam_id
+		join Track_Exam te
+		on te.Exam_id = se.Exam_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
 		join Course c
-		on c.crs_id = tce.crs_id
+		on c.crs_id = e.crs_id
 		where se.std_id = @studentId
 	end try
 	begin catch
@@ -471,15 +475,15 @@ begin
 		exec Log_Error;
 	end catch
 end
-
+Read_Student_Grades_By_Student_Id 13579246801357
 go
 
-create proc Read_Instructor_Courses_By_Instructor_Id @instructorId int
+alter proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
 as
 begin
 	begin try
 		select 
-		c.crs_name, t.track_name, b.BranchName, count(s.std_id) as 'Number Of Students'
+		c.crs_id, c.crs_name, t.track_id, t.track_name, b.BranchId, b.BranchName, count(s.std_id) as 'Number Of Students'
 		from Instructor i
 		join Instructor_Teach_Course_For_Track_In_Branch itc
 		on itc.ins_id = i.Ins_id
@@ -492,7 +496,7 @@ begin
 		join Branch b
 		on itc.branch_id = b.BranchId
 		where itc.ins_id = @instructorId
-		group by c.crs_name, t.track_name, b.BranchName
+		group by c.crs_name, c.crs_id, t.track_id, t.track_name, b.BranchId, b.BranchName
 	end try
 	begin catch
 		exec Show_Error;
