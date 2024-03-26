@@ -538,6 +538,4 @@ public partial class ITI_EXAMContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-public DbSet<Examination_System.Models.Add_BranchResult> Add_BranchResult { get; set; }
 }

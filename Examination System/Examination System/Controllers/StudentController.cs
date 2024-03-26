@@ -33,10 +33,6 @@ namespace Examination_System.Controllers
             currentStudent = studentRepo.GetStudentById(userId);
             base.OnActionExecuting(context);
         }
-        public IActionResult Info()
-        {
-            return View(currentStudent);
-        }
         public IActionResult Courses()
         {
             var track = currentStudent.Track;
@@ -59,7 +55,7 @@ namespace Examination_System.Controllers
         [Authorize(Roles="Student")]
         public IActionResult Index()
         {
-            return View();
+            return View(currentStudent);
         }
         public IActionResult StudentPastExams()
         {

@@ -81,5 +81,9 @@ namespace Examination_System.Controllers
         {
             return await instructorRepo.Read_Track_From_Instructor_Course_Branch(currentInstructor.InsId, crsId, BranchId);
         }
+        public IActionResult Reports()
+        {
+			return View();
+		}
     }
 }

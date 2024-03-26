@@ -1,6 +1,14 @@
 ﻿@model UserViewModel
 @{
     ViewData["Title"] = "Profile";
+    if(User.IsInRole("Student"))
+    {
+        Layout = "~/Views/Student/CustomLayoutStudent.cshtml";
+    }
+    else if(User.IsInRole("Instructor"))
+    {
+        Layout = "~/Views/Shared/CustomLayout.cshtml";
+    }
 }
 
 <h1 class="mb-4">Profile</h1>

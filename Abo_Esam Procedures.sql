@@ -424,7 +424,7 @@ end
 
 go
 
-alter proc Read_All_Questions_For_Course @courseId int
+create proc Read_All_Questions_For_Course @courseId int
 as
 begin
 	begin try
@@ -492,7 +492,7 @@ end
 Read_Student_Grades_By_Student_Id 13579246801357
 go
 
-alter proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
+create proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
 as
 begin
 	begin try
@@ -540,14 +540,14 @@ end
 
 go
 
-alter proc Read_Exam_Questions @ExamId int
+create proc Read_Exam_Questions @ExamId int
 as
 begin
 	begin try
 	select q.ques_id, q.ques_tittle, 
 	case
-		when q.ques_type = 'M' then CONCAT_WS(', ', c.A, c.B, c.C, c.D)
-		when q.ques_type = 'T' then CONCAT_WS(', ', 'True', 'False')
+		when q.ques_type = 'M' then CONCAT_WS('@@@ ', c.A, c.B, c.C, c.D)
+		when q.ques_type = 'T' then CONCAT_WS('@@@ ', 'True', 'False')
 	end as 'Choices',
 		case 
 		when q.ques_type = 'T' then
@@ -601,7 +601,7 @@ go
 --	on c.ques_id = ste.Question_id
 --end
 
-alter proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
+create proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
 as
 begin
 	create table #t(ques_tittle varchar(max),Choices varchar(max),student_answer varchar(1),model_answer varchar(1))
@@ -639,7 +639,7 @@ end
 
 go
 
-alter proc Read_All_Exams_For_CourseId @crsId int
+create proc Read_All_Exams_For_CourseId @crsId int
 as
 begin
 	begin try
@@ -693,7 +693,7 @@ end
 
 go
 
-alter proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
+create proc Read_Instructor_Courses_From_Track_Branch @instructorId varchar(14), @trackId int, @branchId int
 as
 begin
 	begin try
@@ -743,7 +743,7 @@ alter table Users
 
 go
 
-alter proc Read_Exams_For_Student_Id @studentId varchar(14)
+create proc Read_Exams_For_Student_Id @studentId varchar(14)
 as
 begin
 	begin try
