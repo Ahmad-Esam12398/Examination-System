@@ -5,7 +5,7 @@
 }
 <div class="container" id="content">
     <div class="row justify-content-between m-3">
-        <a asp-action="Create" class="btn btn-primary col-1">
+        <a asp-action="Create" class="btn btn-primary w-auto" >
             Create
         </a>
         <select name="CourseId" id="courseSelect" asp-items="@ViewBag.instructorCoursesSLVB" class="selectBox"></select>
@@ -48,6 +48,8 @@
             }
         </tbody>
     </table>
+
+    <a asp-action="Index" asp-controller="Instructor" class="btn btn-outline-primary">Back</a>
 </div>
 <script src="~/js/QuestionIndex.js"></script>
 
