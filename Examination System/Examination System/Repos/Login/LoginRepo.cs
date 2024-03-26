@@ -43,18 +43,11 @@ namespace Examination_System.Repos.Login
         }
         public void changePassword(UserViewModel user)
         {
-            if (user.Role == "Student")
-            {
-                var student = db.Users.Find(user.Id);
-                student.Password = user.Password;
+                var User = db.Users.Find(user.Id);
+                User.Password = user.Password;
                 db.SaveChanges();
-            }
-            else
-            {
-                var instructor = db.Users.Find(user.Id);
-                instructor.Password = user.Password;
-                db.SaveChanges();
-            }
+            
+
         }
     }
 }

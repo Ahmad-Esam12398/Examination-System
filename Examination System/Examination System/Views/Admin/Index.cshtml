@@ -1,32 +1,45 @@
-﻿@model Branch
+﻿@model List<Branch>
 @{
-    ViewData["Title"] = "Index";
-    var branches = ViewData["Branches"] as List<Read_All_BranchesResult>;
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1>Welcome Admin</h1>
+<h1>Admin Dashboard</h1>
 
-<table class="table table-bordered table-hover">
-    <thead>
-        <tr>
-            <th>Branch Id</th>
-            <th>Branch Name</th>
-            <th>Manager Id</th>
-        </tr>
-    <tbody>
-            @foreach (var branch in branches)
-        {
-            <tr>
-                <td>@branch.BranchId</td>
-                <td>@branch.BranchName</td>
-                <td>@branch.MgrId</td>
-            </tr>
-        }
-    </tbody>
-</table>
-<!-- Button trigger modal -->
+<div class="row">
+    <div class="col-md-12">
+        <h2>Branches</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Branch Id</th>
+                    <th>Branch Name</th>
+                    <th>Manager Id</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var branch in Model)
+                {
+                    <tr>
+                        <td>@branch.BranchId</td>
+                        <td>@branch.BranchName</td>
+                        <td>@branch.MgrId</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="location.href='@Url.Action("BranchDetails", "Admin", new { id = branch.BranchId })'">Details</button>
+                            <button type="button" class="btn btn-warning btn-sm" onclick="location.href='@Url.Action("UpdateBranch", "Admin", new { id = branch.BranchId,branchName = branch.BranchName, managerId=branch.MgrId })'">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(@branch.BranchId)">Delete</button>
+                            <button type="button" class="btn btn-info btn-sm" onclick="location.href='@Url.Action("showTracksByBranch", "Admin", new { branchId = branch.BranchId })'">Manage Tracks</button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Add
+    Add Branch
 </button>
 
 <!-- Modal -->
@@ -34,53 +47,56 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Generated Exam</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Branch</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table>
-                    <tr>
-                        <td><label asp-for="BranchName"></label></td>
-                        <td><input asp-for="BranchName" /></td>
-                        <td><span asp-validation-for="BranchName" class="text-danger"></span></td>
-                    </tr>
-                    <tr>
-                        <td><label asp-for="MgrId"></label></td>
-                        <td><input asp-for="MgrId" /></td>
-                        <td><span asp-validation-for="MgrId" class="text-danger"></span></td>
-                    </tr>
-                </table>
+                <form id="addBranchForm">
+                    <div class="mb-3">
+                        <label for="branchName" class="form-label">Branch Name</label>
+                        <input type="text" class="form-control" id="branchName" name="branchName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="managerId" class="form-label">Manager Id</label>
+                        <input type="text" class="form-control" id="managerId" name="managerId">
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="submit" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="addBranchButton">Add Branch</button>
             </div>
         </div>
     </div>
 </div>
-@section scripts{
-<partial name="_ValidationScriptsPartial" />
+
+@section scripts {
     <script>
-        $("#submit").click(function () {
-            $.ajax({
-                url: "/Admin/AddBranch",
-                type: "POST",
-                data: {
-                    BranchName: $("#BranchName").val(),
-                    MgrId: $("#MgrId").val()
-                },
-                success: function (data) {
-                    if (data.success) {
-                        alert("Branch Added Successfully");
-                        location.reload();
+        $(document).ready(function () {
+            $("#addBranchButton").click(function () {
+                $.ajax({
+                    url: "/Admin/AddBranch",
+                    type: "POST",
+                    data: $("#addBranchForm").serialize(),
+                    success: function (data) {
+                        if (data.success) {
+                            alert("Branch added successfully.");
+                            location.reload();
+                        } else {
+                            alert("Failed to add branch.");
+                        }
                     }
-                    else {
-                        alert("Branch Not Added");
-                    }
-                }
-            })
-        })
+                });
+            });
+        });
+
+        function confirmDelete(branchId) {
+            if (confirm("Are you sure you want to delete this branch?")) {
+                // Perform delete operation here
+                // You can use AJAX to send delete request to server
+                // Upon successful delete, refresh the page or update UI accordingly
+                alert("Branch deleted successfully.");
+            }
+        }
     </script>
 }
-
-

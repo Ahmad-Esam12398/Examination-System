@@ -1,0 +1,55 @@
+﻿@model Track
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Show Courses By Track</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-update-degree {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Course Id</th>
+                    <th>Course Name</th>
+                    <th>duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in Model.Crs)
+                {
+                    <tr>
+                        <td>@course.CrsId</td>
+                        <td>@course.CrsName</td>
+                        <td>@course.CrsDuration</td>
+                        <td>
+                            <a asp-action="CourseIndex" asp-controller="Admin" asp-route-courseId="@course.CrsId" class="btn btn-info">Manage Course</a>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </>
+</body>
+</html>

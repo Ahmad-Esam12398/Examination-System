@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Examination_System.ViewModels
 {
-    public class UserViewModel:LoginRepo
+    public class UserViewModel
     {
         [RegularExpression("^[0-9]*$", ErrorMessage = "Please enter a valid ID")]
         [MinLength(14, ErrorMessage = "Please enter a valid ID")]
