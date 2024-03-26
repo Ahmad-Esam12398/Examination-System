@@ -1,0 +1,36 @@
+﻿@model List<Track>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Branches</h2>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Branch Id</th>
+                    <th>Branch Name</th>
+                    <th>Manager Id</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var track in Model)
+                {
+                    <tr>
+                        <td>@track.TrackId</td>
+                        <td>@track.TrackName</td>
+                        <td>@track.Sup</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="location.href='@Url.Action("TrackDetails", "Admin", new { id = track.TrackId })'">Details</button>
+                            <button type="button" class="btn btn-info btn-sm" onclick="locatio.href='@Url.Action("showStudentsByTrack", "Admin", new { trackId = track.TrackId })'">Manage Students</button>)
+                            <button type="button" class="btn btn-warning btn-sm" onclick="location.href='@Url.Action("EditTrack", "Admin", new { id = track.TrackId })'">Edit</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(@track.TrackId)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Add Branch
+</button>

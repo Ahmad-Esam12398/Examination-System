@@ -1,0 +1,63 @@
+﻿@model Branch
+@{
+    ViewData["Title"] = "ShowTracksByBranch";
+}
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Show Tracks By Branch</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+        }
+
+        .btn-update-degree {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Show Courses By Department</h2>
+        <div class="alert alert-info">
+            <strong>Department:</strong> @Model.BranchId - @Model.BranchName (manager id: @Model.MgrId)
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Track Id</th>
+                    <th>Track Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var track in Model.Tracks)
+                {
+                    <tr>
+                        <td>@track.TrackId</td>
+                        <td>@track.TrackName</td>
+                        
+                        <td>
+                            <a asp-action="showCoursesByTrack" asp-controller="Admin" asp-route-deptid="@Model.BranchId" asp-route-trackid="@track.TrackId" class="btn btn-info">Show Courses</a> |
+                            <a asp-action="showStudentsByTrack" asp-controller="Admin" asp-route-BranchId="@Model.BranchId" asp-route-trackid="@track.TrackId" class="btn btn-outline-dark">List Students</a>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
