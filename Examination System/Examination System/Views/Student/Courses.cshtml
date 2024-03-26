@@ -1,0 +1,32 @@
+﻿@model Examination_System.Models.Student
+@{
+    ViewData["Title"] = "Courses";
+    Layout = "~/Views/Shared/mainLayout.cshtml";
+}
+
+<h1>Courses</h1>
+
+<section class="my-5">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Course Name</th>
+                    <th>Duration (Hours)</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var course in ViewBag.Courses)
+                {
+                    <tr>
+                        <td>@course.CrsName</td>
+                        <td>@course.CrsDuration</td>
+                        @* update grade *@
+                        <td>@course.Grade</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

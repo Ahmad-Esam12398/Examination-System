@@ -13,15 +13,15 @@
 <div class="m-3">
 
     <label>Choice A</label>
-    <textarea asp-for="Choice.A" required class="form-control mb-3">@Model.Choice.A</textarea>
+    <textarea asp-for="Choice.A" required class="form-control mb-3">@Model?.Choice?.A</textarea>
 
     <label>Choice B</label>
-    <textarea name="Choice.B" required class="form-control mb-3">@Model.Choice.B</textarea>
+    <textarea name="Choice.B" required class="form-control mb-3">@Model?.Choice?.B</textarea>
 
     <label>Choice C</label>
-    <textarea name="Choice.C" required class="form-control mb-3">@Model.Choice.C</textarea>
+    <textarea name="Choice.C" required class="form-control mb-3">@Model?.Choice?.C</textarea>
 
     <label>Choice D</label>
-    <textarea name="Choice.D" required class="form-control mb-3">@Model.Choice.C</textarea>
+    <textarea name="Choice.D" required class="form-control mb-3">@Model?.Choice?.C</textarea>
 
 </div>

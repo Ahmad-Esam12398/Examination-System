@@ -464,6 +464,8 @@ begin catch
 end catch
 end
 
+exec Read_Students_Data_By_Track_Id 11
+
 go
 
 alter proc Read_Student_Grades_By_Student_Id @studentId int
@@ -487,7 +489,7 @@ begin
 		exec Log_Error;
 	end catch
 end
-
+Read_Student_Grades_By_Student_Id 13579246801357
 go
 
 alter proc Read_Instructor_Courses_By_Instructor_Id @instructorId varchar(14)
@@ -738,6 +740,61 @@ go
 
 alter table Users
 	add constraint uniqueRolePlusId unique(ID, RoleId)
+
+go
+
+alter proc Read_Exams_For_Student_Id @studentId varchar(14)
+as
+begin
+	begin try
+		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade
+		from Student s
+		join Users u
+		on u.ID = s.std_id
+		join Track_Exam te
+		on te.tr_id = s.track_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
+		join Course c
+		on c.crs_id = e.crs_id
+		where s.std_id = '29803121600573';
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+exec Read_Exams_For_Student_Id '29803121600573'
+
+go
+
+create proc Read_Incoming_Exams_For_Student_Id @studentId varchar(14)
+as
+begin
+	begin try
+		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade
+		from Student s
+		join Users u
+		on u.ID = s.std_id
+		join Track_Exam te
+		on te.tr_id = s.track_id
+		join Exam e
+		on e.Ex_id = te.Exam_id
+		join Course c
+		on c.crs_id = e.crs_id
+		where s.std_id = @studentId and te.Exam_date > GETDATE();
+		exec Throw_Error_No_Rows_Affected;
+	end try
+	begin catch
+		exec Show_Error;
+		exec Log_Error;
+	end catch
+end
+
+exec Read_Incoming_Exams_For_Student_Id '29803121600573';
+
 
 
 

@@ -40,9 +40,8 @@
                 <div class="mt-4">
                     @if (User.Identity.Name == null)
                     {
-                        <p class="mb-0">Ready to get started?</p>
 
-                        <a asp-area="" asp-controller="Account" asp-action="Login" class="btn btn-primary mt-2">Login</a>
+                        <a href="/Account/Login" class="btn btn-primary mt-2">Login</a>
                     }
 					else{
                         <p class="mb-0">Finished?</p>
