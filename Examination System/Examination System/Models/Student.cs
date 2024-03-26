@@ -9,17 +9,13 @@ public partial class Student
 {
     public string StdId { get; set; }
 
-    public string StdName { get; set; }
-
-    public string StdPassword { get; set; }
-
-    public string StdMobile { get; set; }
-
     public DateOnly StdBirthDate { get; set; }
 
     public int TrackId { get; set; }
 
     public int BranchId { get; set; }
+
+    public int RoleId { get; set; }
 
     public virtual Branch Branch { get; set; }
 
@@ -28,4 +24,6 @@ public partial class Student
     public virtual ICollection<StudentTakeExam> StudentTakeExams { get; set; } = new List<StudentTakeExam>();
 
     public virtual Track Track { get; set; }
+
+    public virtual User User { get; set; }
 }

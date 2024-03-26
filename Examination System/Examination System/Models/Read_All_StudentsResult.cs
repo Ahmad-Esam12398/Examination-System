@@ -8,11 +8,9 @@ namespace Examination_System.Models
     public partial class Read_All_StudentsResult
     {
         public string std_id { get; set; }
-        public string std_name { get; set; }
-        public string std_password { get; set; }
-        public string std_mobile { get; set; }
         public DateOnly std_birthDate { get; set; }
         public int track_id { get; set; }
         public int branch_id { get; set; }
+        public int RoleId { get; set; }
     }
 }

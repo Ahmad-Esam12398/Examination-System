@@ -38,13 +38,13 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <p class="mb-0">Ready to get started?</p>
                     @if (User.Identity.Name == null)
                     {
 
                         <a href="/Account/Login" class="btn btn-primary mt-2">Login</a>
                     }
 					else{
+                        <p class="mb-0">Finished?</p>
                         <a href="/Account/Logout" class="btn btn-primary mt-2">Logout</a>
                     }
                 </div>

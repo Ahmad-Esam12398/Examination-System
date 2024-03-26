@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Examination_System.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Examination_System.Filters;
 
 namespace Examination_System.Controllers
 {
+    [ExceptionFiltercustomed]
     public class AccountController: Controller
     {
         private readonly ILoginRepo loginRepo;
@@ -13,8 +15,9 @@ namespace Examination_System.Controllers
         {
             loginRepo = _loginRepo;
         }
-        public IActionResult Login()
+        public IActionResult Login(string Role)
         {
+            ViewBag.Role = Role;
             return View();
         }
         [HttpPost]
@@ -22,6 +25,7 @@ namespace Examination_System.Controllers
         {
             if(!ModelState.IsValid)
             {
+
 				return View(login);
 			}
             var user = loginRepo.AuthenticateUser(login);
@@ -40,18 +44,22 @@ namespace Examination_System.Controllers
 
             if (user.Role == "Student")
             {
-				return RedirectToAction("Index", "Student");
+                return RedirectToAction("Info", "Student", new {id = user.Id} );
 			}
-			else
+			else if (user.Role == "Instructor")
             {
-				return RedirectToAction("Index", "Instructor");
+				return RedirectToAction("Index", "Instructor", new {id = user.Id});
 			}
+            else
+            {
+                return RedirectToAction("Index", "Admin");
+            }
 
         }
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index","Home");
         }
         [HttpGet]
         public IActionResult Profile(string id)

@@ -75,8 +75,15 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Login As
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+										<a class="dropdown-item" asp-area="" asp-route-Role="Admin" asp-controller="Account" asp-action="Login">Admin</a>
+										<a class="dropdown-item" asp-area="" asp-route-Role="Instructor" asp-controller="Account" asp-action="Login">Instructor</a>
+                                        <a class="dropdown-item" asp-area="" asp-route-Role="Student" asp-controller="Account" asp-action="Login">Student</a>
+                                        </div>
                             </li>
                         }
                     </ul>

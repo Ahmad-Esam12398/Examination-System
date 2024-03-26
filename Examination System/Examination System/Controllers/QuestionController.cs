@@ -1,4 +1,5 @@
-﻿using Examination_System.Enums;
+using Examination_System.Filters;
+using Examination_System.Enums;
 using Examination_System.Models;
 using Examination_System.Repos;
 using Examination_System.Repos.Instructor;
@@ -12,8 +13,12 @@ using System.Security.Claims;
 namespace Examination_System.Controllers;
 
 [Authorize(Roles = "Instructor")]
+[ExceptionFiltercustomed]
+
+
 public class QuestionController : Controller
 {
+
     private readonly IQuestionRepo _questionRepo;
     private readonly IInstructorRepo _instructorRepo;
     private Instructor currentInstructor;

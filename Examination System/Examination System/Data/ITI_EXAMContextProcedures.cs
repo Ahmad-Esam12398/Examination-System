@@ -69,11 +69,15 @@ namespace Examination_System.Data
             modelBuilder.Entity<Read_All_Track_CoursesResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_All_TracksResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Exam_QuestionsResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Read_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Read_Incoming_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Instructor_Courses_By_Instructor_IdResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Read_Instructor_Courses_From_Track_BranchResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Questions_With_Students_AnswersResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Student_Grades_By_Student_IdResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Students_Data_By_Track_IdResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Read_Topics_Of_CourseResult>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Read_Track_From_Instructor_Course_BranchResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Show_ErrorResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Update_BranchResult>().HasNoKey().ToView(null);
             modelBuilder.Entity<Update_Course_By_IdResult>().HasNoKey().ToView(null);
@@ -322,7 +326,7 @@ namespace Examination_System.Data
             return _;
         }
 
-        public virtual async Task<List<Add_StudentResult>> Add_StudentAsync(string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<Add_StudentResult>> Add_StudentAsync(string std_Id, string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -333,6 +337,13 @@ namespace Examination_System.Data
 
             var sqlParameters = new []
             {
+                new SqlParameter
+                {
+                    ParameterName = "std_Id",
+                    Size = 14,
+                    Value = std_Id ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
                 new SqlParameter
                 {
                     ParameterName = "std_name",
@@ -374,7 +385,7 @@ namespace Examination_System.Data
                 },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Add_StudentResult>("EXEC @returnValue = [dbo].[Add_Student] @std_name, @std_password, @std_mobile, @std_birthDate, @track_id, @branch_id", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Add_StudentResult>("EXEC @returnValue = [dbo].[Add_Student] @std_Id, @std_name, @std_password, @std_mobile, @std_birthDate, @track_id, @branch_id", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1264,6 +1275,60 @@ namespace Examination_System.Data
             return _;
         }
 
+        public virtual async Task<List<Read_Exams_For_Student_IdResult>> Read_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "studentId",
+                    Size = 14,
+                    Value = studentId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<Read_Exams_For_Student_IdResult>("EXEC @returnValue = [dbo].[Read_Exams_For_Student_Id] @studentId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<Read_Incoming_Exams_For_Student_IdResult>> Read_Incoming_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "studentId",
+                    Size = 14,
+                    Value = studentId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<Read_Incoming_Exams_For_Student_IdResult>("EXEC @returnValue = [dbo].[Read_Incoming_Exams_For_Student_Id] @studentId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
         public virtual async Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> Read_Instructor_Courses_By_Instructor_IdAsync(string instructorId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
@@ -1285,6 +1350,45 @@ namespace Examination_System.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<Read_Instructor_Courses_By_Instructor_IdResult>("EXEC @returnValue = [dbo].[Read_Instructor_Courses_By_Instructor_Id] @instructorId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<Read_Instructor_Courses_From_Track_BranchResult>> Read_Instructor_Courses_From_Track_BranchAsync(string instructorId, int? trackId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "instructorId",
+                    Size = 14,
+                    Value = instructorId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "trackId",
+                    Value = trackId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "branchId",
+                    Value = branchId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<Read_Instructor_Courses_From_Track_BranchResult>("EXEC @returnValue = [dbo].[Read_Instructor_Courses_From_Track_Branch] @instructorId, @trackId, @branchId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1396,6 +1500,45 @@ namespace Examination_System.Data
                 parameterreturnValue,
             };
             var _ = await _context.SqlQueryAsync<Read_Topics_Of_CourseResult>("EXEC @returnValue = [dbo].[Read_Topics_Of_Course] @courseId", sqlParameters, cancellationToken);
+
+            returnValue?.SetValue(parameterreturnValue.Value);
+
+            return _;
+        }
+
+        public virtual async Task<List<Read_Track_From_Instructor_Course_BranchResult>> Read_Track_From_Instructor_Course_BranchAsync(string instructorId, int? crsId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        {
+            var parameterreturnValue = new SqlParameter
+            {
+                ParameterName = "returnValue",
+                Direction = System.Data.ParameterDirection.Output,
+                SqlDbType = System.Data.SqlDbType.Int,
+            };
+
+            var sqlParameters = new []
+            {
+                new SqlParameter
+                {
+                    ParameterName = "instructorId",
+                    Size = 14,
+                    Value = instructorId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "crsId",
+                    Value = crsId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "branchId",
+                    Value = branchId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                parameterreturnValue,
+            };
+            var _ = await _context.SqlQueryAsync<Read_Track_From_Instructor_Course_BranchResult>("EXEC @returnValue = [dbo].[Read_Track_From_Instructor_Course_Branch] @instructorId, @crsId, @branchId", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

@@ -17,7 +17,7 @@ namespace Examination_System.Data
         Task<int> Add_Grade_To_StudentAsync(string std_id, int? Exam_id, double? Grade, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Add_InstructorResult>> Add_InstructorAsync(string Ins_id, string Ins_name, string ins_password, string Ins_mobile, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Add_QuestionResult>> Add_QuestionAsync(string Qtitle, string QAnswer, string Qtype, int? Qweight, string Qchoice1, string Qchoice2, string Qchoice3, string Qchoice4, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
-        Task<List<Add_StudentResult>> Add_StudentAsync(string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Add_StudentResult>> Add_StudentAsync(string std_Id, string std_name, string std_password, string std_mobile, DateOnly? std_birthDate, int? track_id, int? branch_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Add_TrackResult>> Add_TrackAsync(string TrackName, string SuperId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Assgin_Question_For_Course_By_InstructorResult>> Assgin_Question_For_Course_By_InstructorAsync(int? QId, int? CourseId, string InstructorId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Assign_Course_To_Instructor_Track_BranchResult>> Assign_Course_To_Instructor_Track_BranchAsync(string instructorId, int? course_Id, int? trackId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
@@ -49,11 +49,15 @@ namespace Examination_System.Data
         Task<List<Read_All_Track_CoursesResult>> Read_All_Track_CoursesAsync(int? trackId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_All_TracksResult>> Read_All_TracksAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Exam_QuestionsResult>> Read_Exam_QuestionsAsync(int? ExamId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Read_Exams_For_Student_IdResult>> Read_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Read_Incoming_Exams_For_Student_IdResult>> Read_Incoming_Exams_For_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Instructor_Courses_By_Instructor_IdResult>> Read_Instructor_Courses_By_Instructor_IdAsync(string instructorId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Read_Instructor_Courses_From_Track_BranchResult>> Read_Instructor_Courses_From_Track_BranchAsync(string instructorId, int? trackId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Questions_With_Students_AnswersResult>> Read_Questions_With_Students_AnswersAsync(int? examId, string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Student_Grades_By_Student_IdResult>> Read_Student_Grades_By_Student_IdAsync(int? studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Students_Data_By_Track_IdResult>> Read_Students_Data_By_Track_IdAsync(int? track_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Read_Topics_Of_CourseResult>> Read_Topics_Of_CourseAsync(int? courseId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+        Task<List<Read_Track_From_Instructor_Course_BranchResult>> Read_Track_From_Instructor_Course_BranchAsync(string instructorId, int? crsId, int? branchId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Show_ErrorResult>> Show_ErrorAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<int> Throw_Error_No_Rows_AffectedAsync(OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
         Task<List<Update_BranchResult>> Update_BranchAsync(int? Branch_Id, string Branch_Name, string MgrId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
