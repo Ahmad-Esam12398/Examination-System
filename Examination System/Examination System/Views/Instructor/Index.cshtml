@@ -154,9 +154,62 @@
         </table>
     </div>
 </div>
+
+<h3>Reports</h3>
+<input type="number" placeholder="depatrtment id" id="depId" />
+<input type="button" class="btn btn-primary" id="r1" value="view department students report" />
+<br />
+<br />
+
+<input type="text" placeholder="student id" id="stId" />
+<input type="button" class="btn btn-primary" id="r2" value="view student grades report" />
+<br />
+<br />
+
+<input type="text" placeholder="instructor id" id="inId" />
+<input type="button" class="btn btn-primary" id="r3" value="view instructor courses report" />
+<br />
+<br />
+
+<input type="number" placeholder="course id" id="crsId" />
+<input type="button" class="btn btn-primary" id="r4" value="view course topics report" />
+<br />
+<br />
+
+<input type="number" placeholder="exam id" id="exId" />
+<input type="button" class="btn btn-primary" id="r5" value="view exam questions report" />
+<br />
+<br />
+
 @section scripts{
     <script src="~/js/testfile.js"></script>
     <script>
+        $('#r1').click(function () {
+            let depId = Number($('#depId').val());
+            var link = `http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fTrack_Students&rs:Command=Render&track_id=${depId}`;
+            window.open(link, '_blank');
+        });
+        $('#r2').click(function () {
+            let stId = $('#stId').val();
+            var link = `http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fStudent_Exam_Grades&rs:Command=Render&studentId=${stId}`;
+            window.open(link, '_blank');
+        });
+        $('#r3').click(function () {
+            let inId = $('#inId').val();
+            var link = `http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fInstructor_Courses&rs:Command=Render&instructorId=${inId}`;
+            window.open(link, '_blank');
+        });
+        $('#r4').click(function () {
+            let crsId = Number($('#crsId').val());
+            var link = `http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fCourse_Topics&rs:Command=Render&courseId=${crsId}`;
+            window.open(link, '_blank');
+        });
+        $('#r5').click(function () {
+            let exId = Number($('#exId').val());
+            var link = `http://localhost/ReportServer/Pages/ReportViewer.aspx?%2fITIExamReports%2fExam&rs:Command=Render&ExamId=${exId}`;
+            window.open(link, '_blank');
+        });
+
         $('#generateExam').click(() => {
             var course = $("select[name='courseId']").text().trim();
             if (confirm(`Are You sure, Generate Exam in course ${course}?`)) {
