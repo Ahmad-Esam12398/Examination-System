@@ -9,6 +9,7 @@ namespace Examination_System.Models
     {
         public int ques_id { get; set; }
         public string ques_tittle { get; set; }
+        public string ques_type { get; set; }
         public string Choices { get; set; }
         [Column("Model Answer")]
         public string ModelAnswer { get; set; }

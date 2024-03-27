@@ -2,7 +2,6 @@
    "CodeGenerationMode": 4,
    "ContextClassName": "ITI_EXAMContext",
    "ContextNamespace": null,
-   "DefaultDacpacSchema": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
    "ModelNamespace": null,
@@ -324,7 +323,7 @@
          "ObjectType": 1
       }
    ],
-   "UiHint": "desktop-7cqe2it.ITI_EXAM.dbo",
+   "UiHint": null,
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

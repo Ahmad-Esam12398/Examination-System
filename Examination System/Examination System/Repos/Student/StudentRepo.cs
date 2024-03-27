@@ -14,14 +14,14 @@ namespace Examination_System.Repos.Student
             db = context;
             dbProcedures = _dbProcedures;
         }
-        public Models.Student GetStudentById(string studentId)
+        public async Task<Models.Student> GetStudentById(string studentId)
         {
-            var student = db.Students.Include(s=> s.Track).Include(s=>s.Branch).Include(s=> s.User).FirstOrDefault(s => s.StdId == studentId);
-            return student;
+            return await db.Students.Include(s => s.Track).ThenInclude(t=>t.Crs).Include(s => s.Branch).Include(s => s.User).FirstOrDefaultAsync(s => s.StdId == studentId);
         }
         public Track GetTrack(string studentId)
         {
             var model = db.Students.Include(s => s.Track).ThenInclude(t => t.Crs).FirstOrDefault(s => s.StdId == studentId);
+           
             if (model == null)
                 return null;
             return model.Track;
@@ -50,15 +50,42 @@ namespace Examination_System.Repos.Student
         {
             return await db.Procedures.Read_Incoming_Exams_For_Student_IdAsync(id);
         }
-        public int GetCourseExam(List<Read_Exams_For_Student_IdResult> source, int courseId)
+        public int GetCourseExam(List<Read_Incoming_Exams_For_Student_IdResult> source, int courseId)
         {
-            return source.FirstOrDefault(e => e.crs_id == courseId).crs_id;
+            return source.FirstOrDefault(e => e.crs_id == courseId).Exam_id;
         }
         
         public async Task<List<Read_Exam_QuestionsResult>> GetExamQuestions(int id)
         {
             return await db.Procedures.Read_Exam_QuestionsAsync(id);
         }
-        
+        public Exam GetExamById(int id)
+        {
+            return db.Exams.FirstOrDefault(e=> e.ExId == id);
+        }
+
+        public Course GetCourseInfo(int CrsId)
+        {
+            return db.Courses.FirstOrDefault(c => c.CrsId == CrsId);
+        }
+
+        public void SaveAnswers(Dictionary<int, string> answers, int examId,string studentId)
+        {
+            foreach (var answer in answers)
+            {
+                db.StudentTakeExams.Add(new() { ExamId = examId, StdId = studentId, QuestionId = answer.Key, Answer = answer.Value });
+            }
+            db.SaveChanges();
+        }
+
+        public async Task ExamCorrection(int examId, string StudentId)
+        {
+            await db.Procedures.Exam_CorrectionAsync(examId, StudentId);
+        }
+
+        public double GetGrade(int ExamId, string studentId)
+        {
+           return db.StudentExamGrades.FirstOrDefault(se => se.ExamId == ExamId && se.StdId == studentId).Grade.Value;
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace Examination_System.Models
         public string crs_name { get; set; }
         public int Ex_grade { get; set; }
         public int Ex_passGrade { get; set; }
+        public int Ex_duration { get; set; }
     }
 }

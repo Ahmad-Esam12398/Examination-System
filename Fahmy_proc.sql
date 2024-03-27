@@ -59,7 +59,7 @@ begin
 	
 end
 
-exec Exam_Generation 29040512000017,2,3, 50
+exec Exam_Generation '29040512000017',2,4,10;
 
 go
 

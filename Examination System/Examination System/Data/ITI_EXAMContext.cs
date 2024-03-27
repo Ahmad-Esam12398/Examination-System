@@ -51,6 +51,7 @@ public partial class ITI_EXAMContext : DbContext
     public virtual DbSet<TrackExam> TrackExams { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>
@@ -533,7 +534,6 @@ public partial class ITI_EXAMContext : DbContext
                 .HasConstraintName("FK_Users_Roles");
         });
 
-        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 
