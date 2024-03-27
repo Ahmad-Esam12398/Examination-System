@@ -18,7 +18,7 @@ public interface IInstructorRepo
     Task<List<Read_All_Exams_For_CourseIdResult>> GetAllExamsForMyCourses(List<Read_Instructor_Courses_By_Instructor_IdResult> source);
     Task GenerateExam(string InstructorId, int crsId, int TF, int duration);
     Task<int> DeleteExam(int examId);
-    Task AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime);
+    Task<int> AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime);
     Task<List<Read_Track_From_Instructor_Course_BranchResult>> Read_Track_From_Instructor_Course_Branch(string InstructorId, int crs, int BranchId);
 
 }

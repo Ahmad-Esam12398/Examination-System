@@ -279,7 +279,7 @@
                     location.reload();
                 },
                 error: function (error) {
-                    alert("Error, Can't Be Assigned, Plz Assign valid Data!");
+                    alert("Error, can't be assigned, " + error.responseJSON.message);
                 }
             });
         })

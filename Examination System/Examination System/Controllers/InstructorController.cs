@@ -68,7 +68,10 @@ namespace Examination_System.Controllers
             DateTime datetime = new DateTime(ExamDate.Year, ExamDate.Month, ExamDate.Day, ExamTime.Hour, ExamTime.Minute, ExamTime.Second);
             try
             {
-                await instructorRepo.AssignExamForTrack(TrackId, BranchId, ExamId, datetime);
+                if(await instructorRepo.AssignExamForTrack(TrackId, BranchId, ExamId, datetime) == 0)
+                {
+                    return BadRequest(new { message = "You can't Assign the same course for track in the same Day!" });
+                }
                 return Ok();
             }
             catch (Exception ex)

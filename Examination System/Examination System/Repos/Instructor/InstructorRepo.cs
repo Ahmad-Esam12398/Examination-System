@@ -75,9 +75,14 @@ namespace Examination_System.Repos.Instructor
                 return 0;
             }
         }
-        public async Task AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime)
+        public async Task<int> AssignExamForTrack(int trackId, int BranchId, int ExamId, DateTime datetime)
         {
-                await db.Procedures.Assign_Exam_For_TrackAsync(trackId, BranchId, ExamId, datetime);
+            if(db.TrackExams.Any(item => item.TrId == trackId && item.BranchId == BranchId && item.ExamDate.Date == datetime.Date))
+            {
+                return 0;
+            }
+            await db.Procedures.Assign_Exam_For_TrackAsync(trackId, BranchId, ExamId, datetime);
+            return 1;
         }
         public IEnumerable<Course>? GetInstructorCourses(string? instructorId)
         {

@@ -46,28 +46,52 @@
 					<li class="sidebar-header">
 						Pages
 					</li>
+					@if (User.IsInRole("Student"))
+					{
+						<li class="sidebar-item active">
+							<a class="sidebar-link" asp-action="Index" asp-controller="Student">
+								<i class="align-middle" data-feather="sliders" style="margin-left: 8px"></i> <span class="align-middle">Home</span>
+							</a>
+						</li>
 
-					<li class="sidebar-item active">
-						<a class="sidebar-link" asp-action="Index" asp-controller="Instructor">
-							<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
-						</a>
-					</li>
+						<li class="sidebar-item">
+							<a class="sidebar-link" asp-controller="Student" asp-action="StudentPastExams">
+								<i class="fa-regular fa-file-lines" style="margin-left: 8px"></i><span class="align-middle">Past Exams</span>
+							</a>
+						</li>
+
+						<li class="sidebar-item">
+							<a class="sidebar-link" asp-controller="Student" asp-action="Courses">
+								<i class="fa-solid fa-info" style="margin-left: 8px"></i><span class="align-middle">Courses</span>
+							</a>
+						</li>
+					}
+					else if(User.IsInRole("Instructor"))
+					{
+						<li class="sidebar-item active">
+							<a class="sidebar-link" asp-action="Index" asp-controller="Instructor">
+								<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+							</a>
+						</li>
+
+
+
+						<li class="sidebar-item">
+							<a class="sidebar-link" asp-controller="Question" asp-action="Index">
+								<i class="fa-solid fa-question"></i><span class="align-middle">Questions</span>
+							</a>
+						</li>
+
+						<li class="sidebar-item">
+							<a class="sidebar-link" asp-controller="Instructor" asp-action="Reports">
+								<i class="fas fa-file-alt"></i><span class="align-middle">Reports</span>
+							</a>
+						</li>
+					}
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" asp-controller="Account" asp-action="Profile">
-						<i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
-						</a>
-					</li>					
-					
-					<li class="sidebar-item">
-						<a class="sidebar-link" asp-controller="Question" asp-action="Index">
-							<i class="fa-solid fa-question"></i><span class="align-middle">Questions</span>
-						</a>
-					</li>					
-					
-					<li class="sidebar-item">
-						<a class="sidebar-link" asp-controller="Instructor" asp-action="Reports">
-							<i class="fas fa-file-alt"></i><span class="align-middle">Reports</span>
+							<i class="align-middle" data-feather="user"></i> <span class="align-middle">Profile</span>
 						</a>
 					</li>
 					<li class="sidebar-item">
