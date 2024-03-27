@@ -1,0 +1,122 @@
+﻿@model List<Question>
+@{
+    ViewData["Title"] = "Info";
+    var Duration = ViewBag.duration;
+    var StdName = ViewBag.StudentName;
+    var CrsName = ViewBag.CrsName;
+}
+
+<style>
+    body {
+        padding: 20px;
+        margin-right: 20%;
+        margin-left: 20%;
+    }
+
+    .question-container {
+        margin-bottom: 20px;
+    }
+
+    .options-container {
+        padding-left: 20px;
+    }
+
+    .option-label {
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .ViewDetails {
+        background-color: darkred;
+        height: 170px;
+        text-align: center;
+        color: floralwhite;
+        margin-bottom: 1cm;
+        padding: 20px;
+    }
+
+    .p-3 {
+        border: 2px solid darkred;
+    }
+
+    .DarkredBtn {
+        background-color: darkred;
+    }
+</style>
+
+<div class="ViewDetails">
+    <h3>Student Name : @StdName</h3>
+    <h3>Course Name : @CrsName</h3>
+    <h3>Exam Duration :@Duration</h3>
+</div>
+<form method="post" id="examForm" asp-controller="Student" asp-action="AnswerHandling">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        var question = Model[i];
+        <div class="question-container">
+            <p><strong>@(i + 1)_@question.QuesTittle</strong> </p>
+
+            @{
+
+                var answerChoices = new List<string>
+                {
+                    question.Choice.A,
+                    question.Choice.B,
+                    question.Choice.C,
+                    question.Choice.D
+                };
+                var random = new Random();
+                answerChoices = answerChoices.OrderBy(x => random.Next()).ToList();
+            }
+
+            <input type="hidden" name="questionId" value="@question.QuesId" />
+            <input type="hidden" name="STD_ID" value="@ViewBag.StdId" />
+            <input type="hidden" name="CRS_ID" value="@ViewBag.CrsId" />
+            <input type="hidden" name="ExamId" value="@ViewBag.examId" />
+            @if (question.QuesType == "M")
+            {
+                <div class="options-container d-flex flex-column mb-3">
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[0]" /> @answerChoices[0]
+                    </label>
+
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[1]" /> @answerChoices[1]
+                    </label>
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[2]" /> @answerChoices[2]
+                    </label>
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[3]" /> @answerChoices[3]
+                    </label>
+                </div>
+            }
+            else if (question.QuesType == "T")
+            {
+                <div class="options-container  d-flex flex-column mb-3">
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="True" /> True
+                    </label>
+                    <label class="p-3 bg-opacity-10  ">
+                        <input type="radio" name="Answer.@question.QuesId" value="False" /> False
+                    </label>
+                </div>
+            }
+
+        </div>
+
+    }
+    <input class="btn btn-danger DarkredBtn text-light" type="submit" value="Submit Answers" />
+</form>
+
+<!-- JavaScript for timer and redirection -->
+<script>
+    setTimeout(function () {
+        document.getElementById("examForm").submit();
+    },@Duration * 60 * 60 * 1000);
+
+    // Redirect to home controller after submitting the form
+    document.getElementById("examForm").addEventListener("submit", function () {
+        window.location.href = "/Home/Index";
+    });
+</script>

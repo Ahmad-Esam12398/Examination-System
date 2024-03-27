@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     var Exams = ViewBag.Exams as List<Read_Incoming_Exams_For_Student_IdResult>;
 }
 @if(Exams.Count == 0){
@@ -17,9 +14,9 @@ else{
         </div>
         <div class="card-body">
             <p>Duration: @exam.crs_name</p>
-            <p>Start Date: @exam.Ex_grade</p>
-            <p>End Date: @exam.Ex_passGrade</p>
-            <a asp-action="TakeExam" asp-route-ExamId="@exam.ID" class="btn btn-primary">Take Exam</a>
+            <p>Full Grade: @exam.Ex_grade</p>
+            <p>Pass Grade: @exam.Ex_passGrade</p>
+            <a asp-action="TakeExam" asp-route-courseId="@exam.crs_id" class="btn btn-primary">Take Exam</a>
         </div>
     </div>
 }

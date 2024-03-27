@@ -31,61 +31,6 @@ namespace Examination_System.Data
         {
             return Procedures;
         }
-
-        protected void OnModelCreatingGeneratedProcedures(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Add_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Add_CourseResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Add_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Add_QuestionResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Add_StudentResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Add_TrackResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Assgin_Question_For_Course_By_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Assign_Course_To_Instructor_Track_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Assign_Course_To_TrackResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Assign_Exam_For_TrackResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_Course_By_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_Course_From_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_Course_From_TrackResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_Exam_By_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_QuestionResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_Question_From_Course_By_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_StudentResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_TopicResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Delete_TrackResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Exam_AnswersResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Exam_CorrectionResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Exam_GenerationResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_BranchesResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_CoursesResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_Exams_For_CourseIdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_Instructor_CoursesResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_InstructorsResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_Questions_For_CourseResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_StudentsResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_TopicsResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_Track_CoursesResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_All_TracksResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Exam_QuestionsResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Incoming_Exams_For_Student_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Instructor_Courses_By_Instructor_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Instructor_Courses_From_Track_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Questions_With_Students_AnswersResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Student_Grades_By_Student_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Students_Data_By_Track_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Topics_Of_CourseResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Read_Track_From_Instructor_Course_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Show_ErrorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_BranchResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_Course_By_IdResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_InstructorResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_StudentResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_TopicResult>().HasNoKey().ToView(null);
-            modelBuilder.Entity<Update_TrackResult>().HasNoKey().ToView(null);
-        }
     }
 
     public partial class ITI_EXAMContextProcedures : IITI_EXAMContextProcedures
@@ -251,7 +196,7 @@ namespace Examination_System.Data
             return _;
         }
 
-        public virtual async Task<List<Add_QuestionResult>> Add_QuestionAsync(string Qtitle, string QAnswer, string Qtype, int? Qweight, string Qchoice1, string Qchoice2, string Qchoice3, string Qchoice4, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<Add_QuestionResult>> Add_QuestionAsync(string Qtitle, string QAnswer, string Qtype, int? Qweight, string Qchoice1, string Qchoice2, string Qchoice3, string Qchoice4, int? instructorId, int? crs_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -317,9 +262,21 @@ namespace Examination_System.Data
                     Value = Qchoice4 ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
+                new SqlParameter
+                {
+                    ParameterName = "instructorId",
+                    Value = instructorId ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "crs_id",
+                    Value = crs_id ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Add_QuestionResult>("EXEC @returnValue = [dbo].[Add_Question] @Qtitle, @QAnswer, @Qtype, @Qweight, @Qchoice1, @Qchoice2, @Qchoice3, @Qchoice4", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Add_QuestionResult>("EXEC @returnValue = [dbo].[Add_Question] @Qtitle, @QAnswer, @Qtype, @Qweight, @Qchoice1, @Qchoice2, @Qchoice3, @Qchoice4, @instructorId, @crs_id", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 

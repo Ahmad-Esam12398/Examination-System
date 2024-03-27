@@ -51,6 +51,10 @@ public partial class ITI_EXAMContext : DbContext
     public virtual DbSet<TrackExam> TrackExams { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ITI_EXAM;Integrated Security=True;Encrypt=True");
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Branch>(entity =>
@@ -533,11 +537,8 @@ public partial class ITI_EXAMContext : DbContext
                 .HasConstraintName("FK_Users_Roles");
         });
 
-        OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-
-public DbSet<Examination_System.Models.Add_BranchResult> Add_BranchResult { get; set; }
 }
