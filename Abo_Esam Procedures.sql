@@ -540,14 +540,14 @@ end
 
 go
 
-create proc Read_Exam_Questions @ExamId int
+alter proc Read_Exam_Questions @ExamId int
 as
 begin
 	begin try
 	select q.ques_id, q.ques_tittle, 
 	case
-		when q.ques_type = 'M' then CONCAT_WS('@@@ ', c.A, c.B, c.C, c.D)
-		when q.ques_type = 'T' then CONCAT_WS('@@@ ', 'True', 'False')
+		when q.ques_type = 'M' then CONCAT_WS('### ', c.A, c.B, c.C, c.D)
+		when q.ques_type = 'T' then CONCAT_WS('### ', 'True', 'False')
 	end as 'Choices',
 		case 
 		when q.ques_type = 'T' then
@@ -601,7 +601,7 @@ go
 --	on c.ques_id = ste.Question_id
 --end
 
-create proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
+alter proc Read_Questions_With_Students_Answers @examId int, @studentId varchar(14)
 as
 begin
 	create table #t(ques_tittle varchar(max),Choices varchar(max),student_answer varchar(1),model_answer varchar(1))
@@ -620,14 +620,14 @@ begin
 			if @ques_type='M'
 				begin
 					insert into #t
-					select @ques_tittle,CONCAT_WS(', ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					select @ques_tittle,CONCAT_WS('### ', c.A, c.B, c.C, c.D) as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
 					from Choice c
 					where c.ques_id=@ques_id
 				end
 			else if @ques_type='T'
 				begin
 					insert into #t
-					select @ques_tittle,CONCAT_WS(', ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
+					select @ques_tittle,CONCAT_WS('### ', 'True', 'False') as 'Choices',@student_answer as 'Student Answer', @ques_answer as 'Model Answer'
 				end
 
 			fetch c1 into @ques_id,@ques_tittle,@student_answer,@ques_answer,@ques_type
