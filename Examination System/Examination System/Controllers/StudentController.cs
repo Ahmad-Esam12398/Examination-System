@@ -30,6 +30,12 @@ namespace Examination_System.Controllers
             currentStudent = studentRepo.GetStudentById(userId).Result;
             base.OnActionExecuting(context);
         }
+
+        public IActionResult Index()
+        {
+            ViewBag.Courses = studentRepo.GetCourses(currentStudent.StdId);
+            return View(currentStudent);
+        }
         public IActionResult Courses()
         {
             var track = currentStudent.Track;
@@ -59,24 +65,30 @@ namespace Examination_System.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> TakeExam(int courseId)
+        public async Task<IActionResult> TakeExam(int courseId, int examId)
         {
             var exams = await studentRepo.GetIncomingExamsForStudent(currentStudent.StdId);
-            var examId = studentRepo.GetCourseExam(exams, courseId);
             ViewBag.StdId = currentStudent.StdId;
             ViewBag.CrsId = courseId;
             ViewBag.examId = examId;
-
+            ViewBag.Duration = studentRepo.GetExamById(examId).ExDuration;
+            ViewBag.StudentName = currentStudent.User.Name;
+            ViewBag.CrsName = studentRepo.GetCourseInfo(courseId).CrsName;
             var examQuestions = await studentRepo.GetExamQuestions(examId);
-            var questions = examQuestions.Select(q => new Question()
-            {
-                QuesId = q.ques_id,
-                QuesTittle = q.ques_tittle,
-                QuesType = q.ques_type,
-                QuesAnswer = q.ModelAnswer,
-                Choice = new Choice() { A = q.Choices.Split(",")[0], B = q.Choices.Split(",")[1], C= q.Choices.Split(",")[2],  D= q.Choices.Split(",")[3] ,QuesId = q.ques_id}
-            }).ToList();
-            return View(questions);
+            return View(examQuestions);
         }
+
+        public async Task<IActionResult> AnswerHandling(Dictionary<int, string> Answer,int ExamId )
+        {
+            studentRepo.SaveAnswers(Answer, ExamId,currentStudent.StdId);
+            await studentRepo.ExamCorrection(ExamId, currentStudent.StdId);
+            var grade = studentRepo.GetGrade(ExamId, currentStudent.StdId);
+            var totalGrade = studentRepo.GetExamById(ExamId).ExGrade;
+            ViewBag.Grade = grade;
+            ViewBag.TotalGrade = totalGrade;
+            return View();
+        }
+
+        
     }
 }

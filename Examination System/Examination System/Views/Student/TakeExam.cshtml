@@ -1,6 +1,7 @@
-﻿@model List<Question>
+﻿@model List<Read_Exam_QuestionsResult>
 @{
     ViewData["Title"] = "Info";
+    Layout = null;
     var Duration = ViewBag.duration;
     var StdName = ViewBag.StudentName;
     var CrsName = ViewBag.CrsName;
@@ -54,51 +55,47 @@
     {
         var question = Model[i];
         <div class="question-container">
-            <p><strong>@(i + 1)_@question.QuesTittle</strong> </p>
+            <p><strong>@(i + 1)_@question.ques_tittle</strong> </p>
 
             @{
 
-                var answerChoices = new List<string>
+                var answerChoices = new List<string>();
+                foreach(var choice in question.Choices.Split("###"))
                 {
-                    question.Choice.A,
-                    question.Choice.B,
-                    question.Choice.C,
-                    question.Choice.D
-                };
-                var random = new Random();
-                answerChoices = answerChoices.OrderBy(x => random.Next()).ToList();
+                    answerChoices.Add(choice);
+                }
             }
 
-            <input type="hidden" name="questionId" value="@question.QuesId" />
+            <input type="hidden" name="questionId" value="@question.ques_id" />
             <input type="hidden" name="STD_ID" value="@ViewBag.StdId" />
             <input type="hidden" name="CRS_ID" value="@ViewBag.CrsId" />
             <input type="hidden" name="ExamId" value="@ViewBag.examId" />
-            @if (question.QuesType == "M")
+            @if (question.ques_type == "M")
             {
                 <div class="options-container d-flex flex-column mb-3">
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[0]" /> @answerChoices[0]
+                        <input type="radio" name="Answer.@question.ques_id" value="A" /> @answerChoices[0]
                     </label>
 
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[1]" /> @answerChoices[1]
+                        <input type="radio" name="Answer.@question.ques_id" value="B" /> @answerChoices[1]
                     </label>
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[2]" /> @answerChoices[2]
+                        <input type="radio" name="Answer.@question.ques_id" value="C" /> @answerChoices[2]
                     </label>
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="@answerChoices[3]" /> @answerChoices[3]
+                        <input type="radio" name="Answer.@question.ques_id" value="D" /> @answerChoices[3]
                     </label>
                 </div>
             }
-            else if (question.QuesType == "T")
+            else if (question.ques_type == "T")
             {
                 <div class="options-container  d-flex flex-column mb-3">
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="True" /> True
+                        <input type="radio" name="Answer.@question.ques_id" value="A" /> True
                     </label>
                     <label class="p-3 bg-opacity-10  ">
-                        <input type="radio" name="Answer.@question.QuesId" value="False" /> False
+                        <input type="radio" name="Answer.@question.ques_id" value="B" /> False
                     </label>
                 </div>
             }

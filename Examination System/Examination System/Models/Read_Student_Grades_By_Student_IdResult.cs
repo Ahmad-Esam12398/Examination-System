@@ -7,5 +7,7 @@ namespace Examination_System.Models
 {
     public partial class Read_Student_Grades_By_Student_IdResult
     {
+        public string crs_name { get; set; }
+        public double? grade { get; set; }
     }
 }

@@ -59,7 +59,7 @@ begin
 	
 end
 
-exec Exam_Generation 29040512000017,2,3
+exec Exam_Generation '29040512000017',2,4,10;
 
 go
 
@@ -102,7 +102,7 @@ begin
 	deallocate c1
 	
 	declare @grade float
-	set @grade = @Student_Grade_Sum/@Grade_Sum*100
+	set @grade = @Student_Grade_Sum
 	exec Add_Grade_To_Student @std_id,@Ex_id,@grade
 	select @grade
 end

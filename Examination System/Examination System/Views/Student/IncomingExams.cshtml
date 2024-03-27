@@ -13,10 +13,11 @@ else{
             <h3>@exam.Name</h3>
         </div>
         <div class="card-body">
-            <p>Duration: @exam.crs_name</p>
+            <p>Course: @exam.crs_name</p>
+            <p>Duration: @exam.Ex_duration minutes</p>
             <p>Full Grade: @exam.Ex_grade</p>
             <p>Pass Grade: @exam.Ex_passGrade</p>
-            <a asp-action="TakeExam" asp-route-courseId="@exam.crs_id" class="btn btn-primary">Take Exam</a>
+            <a asp-action="TakeExam" asp-route-courseId="@exam.crs_id" asp-route-examId="@exam.Exam_id" class="btn btn-primary">Take Exam</a>
         </div>
     </div>
 }

@@ -196,7 +196,7 @@ namespace Examination_System.Data
             return _;
         }
 
-        public virtual async Task<List<Add_QuestionResult>> Add_QuestionAsync(string Qtitle, string QAnswer, string Qtype, int? Qweight, string Qchoice1, string Qchoice2, string Qchoice3, string Qchoice4, int? instructorId, int? crs_id, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<Add_QuestionResult>> Add_QuestionAsync(string Qtitle, string QAnswer, string Qtype, int? Qweight, string Qchoice1, string Qchoice2, string Qchoice3, string Qchoice4, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -262,21 +262,9 @@ namespace Examination_System.Data
                     Value = Qchoice4 ?? Convert.DBNull,
                     SqlDbType = System.Data.SqlDbType.VarChar,
                 },
-                new SqlParameter
-                {
-                    ParameterName = "instructorId",
-                    Value = instructorId ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
-                new SqlParameter
-                {
-                    ParameterName = "crs_id",
-                    Value = crs_id ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
-                },
                 parameterreturnValue,
             };
-            var _ = await _context.SqlQueryAsync<Add_QuestionResult>("EXEC @returnValue = [dbo].[Add_Question] @Qtitle, @QAnswer, @Qtype, @Qweight, @Qchoice1, @Qchoice2, @Qchoice3, @Qchoice4, @instructorId, @crs_id", sqlParameters, cancellationToken);
+            var _ = await _context.SqlQueryAsync<Add_QuestionResult>("EXEC @returnValue = [dbo].[Add_Question] @Qtitle, @QAnswer, @Qtype, @Qweight, @Qchoice1, @Qchoice2, @Qchoice3, @Qchoice4", sqlParameters, cancellationToken);
 
             returnValue?.SetValue(parameterreturnValue.Value);
 
@@ -1385,7 +1373,7 @@ namespace Examination_System.Data
             return _;
         }
 
-        public virtual async Task<List<Read_Student_Grades_By_Student_IdResult>> Read_Student_Grades_By_Student_IdAsync(int? studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+        public virtual async Task<List<Read_Student_Grades_By_Student_IdResult>> Read_Student_Grades_By_Student_IdAsync(string studentId, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
         {
             var parameterreturnValue = new SqlParameter
             {
@@ -1399,8 +1387,9 @@ namespace Examination_System.Data
                 new SqlParameter
                 {
                     ParameterName = "studentId",
+                    Size = 14,
                     Value = studentId ?? Convert.DBNull,
-                    SqlDbType = System.Data.SqlDbType.Int,
+                    SqlDbType = System.Data.SqlDbType.VarChar,
                 },
                 parameterreturnValue,
             };

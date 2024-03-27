@@ -544,7 +544,7 @@ alter proc Read_Exam_Questions @ExamId int
 as
 begin
 	begin try
-	select q.ques_id, q.ques_tittle, 
+	select q.ques_id, q.ques_tittle, q.ques_type,
 	case
 		when q.ques_type = 'M' then CONCAT_WS('### ', c.A, c.B, c.C, c.D)
 		when q.ques_type = 'T' then CONCAT_WS('### ', 'True', 'False')
@@ -770,11 +770,11 @@ exec Read_Exams_For_Student_Id '29803121600573'
 
 go
 
-create proc Read_Incoming_Exams_For_Student_Id @studentId varchar(14)
+alter proc Read_Incoming_Exams_For_Student_Id @studentId varchar(14)
 as
 begin
 	begin try
-		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade
+		select u.ID, u.Name, te.Exam_id, te.Exam_date, e.crs_id, c.crs_name, e.Ex_grade, e.Ex_passGrade,e.Ex_duration
 		from Student s
 		join Users u
 		on u.ID = s.std_id
