@@ -30,18 +30,6 @@ namespace Examination_System.Controllers
             currentStudent = studentRepo.GetStudentById(userId).Result;
             base.OnActionExecuting(context);
         }
-        
-        public IActionResult Info()
-        {
-            var track = currentStudent.Track;
-            var Courses = track.Crs;
-            var branch = currentStudent.Branch;
-            ViewBag.track = track;
-            ViewBag.branch = branch;
-            ViewBag.courses = Courses;
-            return View(currentStudent);
-        }
-        
         public IActionResult Courses()
         {
             var track = currentStudent.Track;
