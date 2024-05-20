@@ -11,6 +11,11 @@
 > - **We have created a stored procedure to show the error number to balance between showing the complete error message to user and not showing anything for security reasons.**
 
 ### Log_Error 
+![Screenshot 2024-05-20 112656](https://github.com/Ahmad-Esam12398/Examination-System/assets/90632545/91e6e6f4-368e-4aec-bba6-476ae3150244)
+![Screenshot 2024-05-20 112641](https://github.com/Ahmad-Esam12398/Examination-System/assets/90632545/6f3f088e-fa25-4f5b-91f8-1db401c2823c)
+![Screenshot 2024-05-20 112625](https://github.com/Ahmad-Esam12398/Examination-System/assets/90632545/d06c9e9a-da22-4637-915e-eaa90d5fbb83)
+![Screenshot 2024-05-20 110944](https://github.com/Ahmad-Esam12398/Examination-System/assets/90632545/eaa2d6c0-4698-4a6c-bf2b-1d60404276c9)
+![Screenshot 2024-05-20 110921](https://github.com/Ahmad-Esam12398/Examination-System/assets/90632545/420af62b-4669-419a-8b2e-81f30e75203e)
 
 ```sql
 create proc Log_Error
