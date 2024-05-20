@@ -157,27 +157,35 @@
 
 @section scripts{
     <script src="~/js/testfile.js"></script>
+    <script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
     <script>
         $('#generateExam').click(() => {
             var course = $("select[name='courseId']").text().trim();
-            if (confirm(`Are You sure, Generate Exam in course ${course}?`)) {
-                $.ajax({
-                    url: "/Instructor/GenerateExam",
-                    type: "POST",
-                    data: {
-                        courseId: $("select[name='courseId']").val(),
-                        TF: $("input[name='TF']").val(),
-                        duration: $("input[name='duration']").val(),
-                    },
-                    success: function (data) {
-                        alert("Exam Generated Successfully!");
-                        location.reload();
-                    },
-                    error: function (error) {
-                        alert("Error");
-                    }
-                });
-            }
+            Swal.fire({
+                title: "Do you want to Generate Exam?",
+                showCancelButton: true,
+                confirmButtonText: "Generate",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    
+                    $.ajax({
+                        url: "/Instructor/GenerateExam",
+                        type: "POST",
+                        data: {
+                            courseId: $("select[name='courseId']").val(),
+                            TF: $("input[name='TF']").val(),
+                            duration: $("input[name='duration']").val(),
+                        },
+                        success: function (data) {
+                            Swal.fire("Saved!", "", "success");
+                            location.reload();
+                        },
+                        error: function (error) {
+                            Swal.fire("Error", "", "error");
+                        }
+                    });
+                }
+            });
         })
         $(document).on('click', 'button.modalShow', function () {
             var examId = $(this).data('id'); // get the exam ID
